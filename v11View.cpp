@@ -48,13 +48,17 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 void Cv11View::OnDraw(CDC* pDC)
 {
 	CreatePen(PS_SOLID, 10, color);
-	switch (shape)
-		case 0:
-			/**/
-		case 1:
-			/**/
-		case 2:
-			/**/
+	switch (shape) {
+	case 0:
+		pDC->Rectangle(rc);
+		break;
+	case 1:
+		pDC->Ellipse(rc);
+		break;
+	case 2:
+		pDC->RoundRect(rc, CPoint(5, 5));
+		break;
+	}
 }
 
 
