@@ -25,6 +25,7 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 // Cv11View constructions/destructions
@@ -56,7 +57,7 @@ void Cv11View::OnDraw(CDC* pDC)
 		pDC->Ellipse(rc);
 		break;
 	case 2:
-		pDC->RoundRect(rc, CPoint(5, 5));
+		pDC->RoundRect(rc, CPoint(20, 20));
 		break;
 	}
 }
@@ -125,3 +126,13 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 // Cv11View message handlers
 
+
+
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	CRectTracker rect;
+	if (rect.TrackRubberBand(this, point, 1)) {
+		rc = rect.m_rect;
+		Invalidate();
+	}
+}
