@@ -27,7 +27,7 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_WM_RBUTTONUP()
 END_MESSAGE_MAP()
 
-// Cv11View construction/destruction
+// Cv11View constructions/destructions
 
 Cv11View::Cv11View() {}
 
