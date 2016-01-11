@@ -29,7 +29,7 @@ END_MESSAGE_MAP()
 
 // Cv11View constructions/destructions
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View() { color = 0; shape = 0; }
 
 Cv11View::~Cv11View()
 {
@@ -47,6 +47,14 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CreatePen(PS_SOLID, 10, color);
+	switch (shape)
+		case 0:
+			/**/
+		case 1:
+			/**/
+		case 2:
+			/**/
 }
 
 
