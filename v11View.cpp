@@ -26,6 +26,10 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_RBUTTONDOWN()
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &Cv11View::OnHighlightRibbonListItem)
 END_MESSAGE_MAP()
 
 // Cv11View constructions/destructions
@@ -48,7 +52,9 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
-	CreatePen(PS_SOLID, 10, color);
+	CPen pen;
+	pen.CreatePen(PS_SOLID, 1, color);
+	pDC->SelectObject(&pen);
 	switch (shape) {
 	case 0:
 		pDC->Rectangle(rc);
@@ -57,7 +63,7 @@ void Cv11View::OnDraw(CDC* pDC)
 		pDC->Ellipse(rc);
 		break;
 	case 2:
-		pDC->RoundRect(rc, CPoint(20, 20));
+		pDC->RoundRect(rc, CPoint(50, 50));
 		break;
 	}
 }
@@ -135,4 +141,48 @@ void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 		rc = rect.m_rect;
 		Invalidate();
 	}
+}
+
+
+void Cv11View::OnShape()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+	shape = pGallery->GetSelectedItem();
+	Invalidate();
+}
+
+
+void Cv11View::OnColor()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* pGallery = (CMFCRibbonColorButton*)arr.GetAt(0);
+	color = pGallery->GetColor();
+	Invalidate();
+}
+
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
+{
+	int index = (int)wp;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElem->GetID(); // button id (ID_SHAPE, ID_COLOR)
+	int shape1 = index;
+	COLORREF color1 = color;
+	if (index >= 0){
+		if (id == ID_SHAPE){
+			shape = index;
+			Invalidate();
+		}
+		if (id == ID_COLOR){
+
+		}
+	}
+	else {
+		shape = shape1;
+		color = color1;
+		Invalidate();
+	}
+	return 0;
 }
