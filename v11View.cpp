@@ -25,11 +25,20 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_LBUTTONDOWN()
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &Cv11View::OnHighlightRibbonListItem)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View() 
+{
+	color = 0;
+	shape = 0;
+	stock_shape = -1;
+}
 
 Cv11View::~Cv11View()
 {
@@ -46,7 +55,27 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 // Cv11View drawing
 
 void Cv11View::OnDraw(CDC* pDC)
-{
+{	
+	
+	CPen pen;
+	pen.CreatePen(PS_SOLID, 1, color);
+	SelectObject(pDC->m_hDC, pen);
+
+	switch (shape)
+	{
+	case 0:
+		pDC->Rectangle(rc);
+		break;
+	case 1:
+		pDC->Ellipse(rc);
+		break;
+	case 2:
+		pDC->RoundRect(rc, CPoint(25, 25));
+		break;
+
+		default:
+			break;
+	}
 }
 
 
@@ -113,3 +142,64 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 // Cv11View message handlers
 
+
+
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	CRectTracker tracer;
+	if (tracer.TrackRubberBand(this, point, true)){
+		rc = tracer.m_rect;
+	}
+	Invalidate();
+
+}
+
+
+void Cv11View::OnShape()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+
+	shape = pGallery->GetSelectedItem();
+
+	stock_shape = shape;
+
+	Invalidate();
+}
+
+
+void Cv11View::OnColor()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* col = (CMFCRibbonColorButton*)arr.GetAt(0);
+
+	color = col->GetColor();
+
+	Invalidate();
+}
+
+
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
+{
+	int index = (int)wp;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElem->GetID(); // button id (ID_SHAPE, ID_COLOR)
+	
+	if (id == ID_SHAPE)
+		if (index == -1)
+			shape = stock_shape;
+		else
+			shape = index;
+		
+	if (id == ID_COLOR)
+	{
+		CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)pElem;
+		color = pColor->GetHighlightedColor();
+	}
+
+	Invalidate();
+
+	return 0;
+}
