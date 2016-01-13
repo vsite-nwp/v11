@@ -36,8 +36,7 @@ END_MESSAGE_MAP()
 Cv11View::Cv11View() 
 {
 	color = 0;
-	shape = 0;
-	stock_shape = -1;
+	shape, stock_shape = 0;
 }
 
 Cv11View::~Cv11View()
@@ -177,6 +176,8 @@ void Cv11View::OnColor()
 
 	color = col->GetColor();
 
+	stock_color = color;
+
 	Invalidate();
 }
 
@@ -195,8 +196,13 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
 		
 	if (id == ID_COLOR)
 	{
-		CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)pElem;
-		color = pColor->GetHighlightedColor();
+		if (index == -1)
+			color = stock_color;
+		else
+		{
+			CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)pElem;
+			color = pColor->GetHighlightedColor();
+		}
 	}
 
 	Invalidate();

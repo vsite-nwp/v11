@@ -26,7 +26,7 @@ protected:
 public:
 	virtual ~Cv11View();
 	CRect rc;
-	COLORREF color;
+	COLORREF color, stock_color;
 	int shape, stock_shape;
 #ifdef _DEBUG
 	virtual void AssertValid() const;
