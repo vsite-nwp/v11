@@ -186,7 +186,7 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
 {
 	int index = (int)wp;
 	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
-	UINT id = pElem->GetID(); // button id (ID_SHAPE, ID_COLOR)
+	UINT id = pElem->GetID();
 	
 	if (id == ID_SHAPE)
 		if (index == -1)
