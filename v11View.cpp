@@ -150,6 +150,7 @@ void Cv11View::OnShape()
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
 	shape = pGallery->GetSelectedItem();
+	shape1 = shape;
 	Invalidate();
 }
 
@@ -160,6 +161,7 @@ void Cv11View::OnColor()
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
 	CMFCRibbonColorButton* pGallery = (CMFCRibbonColorButton*)arr.GetAt(0);
 	color = pGallery->GetColor();
+	color1 = color;
 	Invalidate();
 }
 
@@ -168,15 +170,15 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
 	int index = (int)wp;
 	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
 	UINT id = pElem->GetID(); // button id (ID_SHAPE, ID_COLOR)
-	int shape1 = index;
-	COLORREF color1 = color;
 	if (index >= 0){
 		if (id == ID_SHAPE){
 			shape = index;
 			Invalidate();
 		}
 		if (id == ID_COLOR){
-
+			CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)pElem;
+			color = pColor->GetHighlightedColor();
+			Invalidate();
 		}
 	}
 	else {
