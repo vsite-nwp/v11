@@ -1,4 +1,5 @@
 #pragma once
+#include "atltypes.h"
 
 class Cv11View : public CView
 {
@@ -39,6 +40,13 @@ protected:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	DECLARE_MESSAGE_MAP()
 public:
+protected:
+	int shape;
+	int shape_t;
+	COLORREF color;
+	CRect rc;
+public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp
