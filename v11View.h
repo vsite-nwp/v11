@@ -46,6 +46,7 @@ protected:
 	COLORREF color;
 	COLORREF color_t;
 	CRect rc;
+	
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnShape();
