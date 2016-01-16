@@ -28,6 +28,7 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_WM_LBUTTONDOWN()
 	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
 	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &Cv11View::OnAfxWmOnHighlightRibbonListItem)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
@@ -160,4 +161,31 @@ void Cv11View::OnColor()
 	color = pGalery->GetColor();
 	Invalidate();
 	// TODO: Add your command handler code here
+}
+
+
+afx_msg LRESULT Cv11View::OnAfxWmOnHighlightRibbonListItem(WPARAM wParam, LPARAM lParam)
+{
+	int index = int(wParam);
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lParam;
+	UINT id = pElem->GetID();
+	switch (id){
+		case ID_SHAPE:
+			shape_t = shape;
+			shape = index;
+			Invalidate();
+			break;
+		case ID_COLOR:
+			CMFCRibbonColorButton *button = (CMFCRibbonColorButton*)pElem;
+			color_t = color;
+			color = button->GetHighlightedColor();
+			Invalidate();
+			break;
+	}
+	if (index == -1) {
+		shape = shape_t;
+		color = color_t;
+		Invalidate();
+	}
+	return 0;
 }

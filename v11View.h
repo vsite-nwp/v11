@@ -44,11 +44,15 @@ protected:
 	int shape;
 	int shape_t;
 	COLORREF color;
+	COLORREF color_t;
 	CRect rc;
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnShape();
 	afx_msg void OnColor();
+protected:
+	afx_msg LRESULT OnAfxWmOnHighlightRibbonListItem(WPARAM wParam, LPARAM lParam);
+	
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp
