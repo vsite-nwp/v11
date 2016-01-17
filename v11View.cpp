@@ -148,6 +148,7 @@ void Cv11View::OnShape()
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
 	shape = pGallery->GetSelectedItem();
+	shape_t = shape;
 	Invalidate();
 	// TODO: Add your command handler code here
 }
@@ -159,6 +160,7 @@ void Cv11View::OnColor()
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
 	CMFCRibbonColorButton* pGalery = (CMFCRibbonColorButton*)arr.GetAt(0);
 	color = pGalery->GetColor();
+	color_t = color;
 	Invalidate();
 	// TODO: Add your command handler code here
 }
@@ -171,13 +173,11 @@ afx_msg LRESULT Cv11View::OnAfxWmOnHighlightRibbonListItem(WPARAM wParam, LPARAM
 	UINT id = pElem->GetID();
 	switch (id){
 		case ID_SHAPE:
-			shape_t = shape;
 			shape = index;
 			Invalidate();
 			break;
 		case ID_COLOR:
 			CMFCRibbonColorButton *button = (CMFCRibbonColorButton*)pElem;
-			color_t = color;
 			color = button->GetHighlightedColor();
 			Invalidate();
 			break;
