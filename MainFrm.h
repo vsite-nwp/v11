@@ -12,7 +12,7 @@ public:
 
 // Operations
 public:
-
+	LRESULT OnHighlightRibbonListItem(WPARAM wp, LPARAM lp);
 // Overrides
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
