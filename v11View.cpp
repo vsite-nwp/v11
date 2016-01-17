@@ -34,7 +34,7 @@ END_MESSAGE_MAP()
 
 // Cv11View constructions/destructions
 
-Cv11View::Cv11View() { color = 0; shape = 0; }
+Cv11View::Cv11View() { color = 0; shape = 0; color1 = color; shape1 = shape; }
 
 Cv11View::~Cv11View()
 {
