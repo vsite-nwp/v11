@@ -35,8 +35,8 @@ END_MESSAGE_MAP()
 
 Cv11View::Cv11View() 
 {
-	color = 0;
-	shape, stock_shape = 0;
+	color = stock_color = RGB(0,0,0);
+	shape = stock_shape = 0;
 }
 
 Cv11View::~Cv11View()
