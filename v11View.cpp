@@ -25,11 +25,19 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &Cv11View::OnHighlightRibbonListItem)
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View()
+{
+	shape = 0;
+	color = 0;
+}
 
 Cv11View::~Cv11View()
 {
@@ -47,6 +55,21 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen pen;
+	pen.CreatePen(PS_SOLID, 2, color);
+	pDC->SelectObject(pen);
+	if (shape == 0)
+	{
+		pDC->Rectangle(rc);
+	}
+	else if (shape == 1)
+	{
+		pDC->Rectangle(rc);
+	}
+	else if (shape == 2)
+	{
+		pDC->RoundRect(rc, { 100, 100 });
+	}
 }
 
 
@@ -113,3 +136,67 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 // Cv11View message handlers
 
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	CRectTracker tracker;
+	if (tracker.TrackRubberBand(this, point, true))
+	{
+		rc = tracker.m_rect;
+		Invalidate();
+	}
+}
+
+
+void Cv11View::OnColor()
+{
+	// TODO: Add your command handler code here
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* colorsBtn = (CMFCRibbonColorButton*)arr.GetAt(0);
+
+	color = colorsBtn->GetColor();
+	tmpColor = color;
+
+	Invalidate();
+}
+
+
+void Cv11View::OnShape()
+{
+	// TODO: Add your command handler code here
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* shapeGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+
+	shape = shapeGallery->GetSelectedItem();
+	tmpShape = shape;
+
+	Invalidate();
+}
+
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
+{
+	int index = (int)wp;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElem->GetID();
+
+	if (id == ID_SHAPE)
+	{
+		if (index == -1)  shape = tmpShape;
+		else shape = index;
+	}
+	else if (id == ID_COLOR)
+	{
+		if (index == -1) color = tmpColor;
+		else
+		{
+			CMFCRibbonColorButton* col = (CMFCRibbonColorButton*)pElem;
+			color = col->GetHighlightedColor();
+		}
+	}
+
+	Invalidate();
+	return 0;
+}
