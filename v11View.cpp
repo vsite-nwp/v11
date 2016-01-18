@@ -66,7 +66,7 @@ void Cv11View::OnDraw(CDC* pDC)
 	}
 	else if (shape == 1)
 	{
-		pDC->Rectangle(rc);
+		pDC->Ellipse(rc);
 	}
 	else if (shape == 2)
 	{
