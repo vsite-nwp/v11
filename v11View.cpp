@@ -37,7 +37,8 @@ Cv11View::Cv11View()
 {
 	shape = 0;
 	shapeTry = 0;
-	color = 0;	
+	color = COLORREF RGB(0,0,0);
+	colorTry = COLORREF RGB(0, 0, 0);
 }
 
 Cv11View::~Cv11View()
