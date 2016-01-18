@@ -28,13 +28,14 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_WM_LBUTTONDOWN()
 	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
 	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &Cv11View::OnHighlightRibbonListItem)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
 Cv11View::Cv11View() {
-	shape = 0;
-	color = 0;
+	saveshape=shape = 0;
+	savecolor=color =RGB(0,0, 0);
 }
 
 Cv11View::~Cv11View()
@@ -114,6 +115,8 @@ void Cv11View::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 }
 
 
+
+
 // Cv11View diagnostics
 
 #ifdef _DEBUG
@@ -158,7 +161,7 @@ void Cv11View::OnShape()
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
 	shape = pGallery->GetSelectedItem();
-	
+	saveshape = shape;
     Invalidate();
 
 	// TODO: Add your command handler code here
@@ -168,11 +171,36 @@ void Cv11View::OnShape()
 void Cv11View::OnColor()
 {
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
-	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
 	CMFCRibbonColorButton* pCollor = (CMFCRibbonColorButton*)arr.GetAt(0);
 	
 	color = pCollor->GetColor();
-	
+	savecolor = color;
 	Invalidate();
 	// TODO: Add your command handler code here
+}
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
+{
+	int index = (int)wp;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElem->GetID(); // button id (ID_SHAPE, ID_COLOR)
+	if (index == -1) {
+		shape = saveshape;
+		color = savecolor;
+
+	}
+	else {
+	if (ID_SHAPE == id) {
+		shape = index;
+
+	}
+	if (ID_COLOR == id) {
+		CMFCRibbonColorButton * button = (CMFCRibbonColorButton*)pElem;
+		color = button->GetHighlightedColor();
+	}
+}
+	
+	Invalidate();
+	
+	return 0;
 }
