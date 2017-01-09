@@ -26,6 +26,8 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONDOWN()
+	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
@@ -137,4 +139,21 @@ void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 	if (tracker.TrackRubberBand(this, point))
 		rc = tracker.m_rect;
 	Invalidate();
+}
+
+
+void Cv11View::OnColor()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* pButton = (CMFCRibbonColorButton*)arr.GetAt(0);
+	
+	color = pButton->GetColor();
+	Invalidate();
+}
+
+
+void Cv11View::OnShape()
+{
+	// TODO: Add your command handler code here
 }

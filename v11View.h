@@ -44,6 +44,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnColor();
+	afx_msg void OnShape();
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp
