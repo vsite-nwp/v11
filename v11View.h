@@ -11,7 +11,9 @@ public:
 	Cv11Doc* GetDocument() const;
 	CRect rc;
 	COLORREF color;
+	COLORREF tempColor;
 	int shape;
+	int tempShape;
 	POINT point;
 
 // Operations
@@ -46,6 +48,7 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnColor();
 	afx_msg void OnShape();
+	LRESULT OnHighlight(WPARAM wp, LPARAM lp);
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp
