@@ -155,5 +155,10 @@ void Cv11View::OnColor()
 
 void Cv11View::OnShape()
 {
-	// TODO: Add your command handler code here
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+
+	shape = pGallery->GetSelectedItem();
+	Invalidate();
 }
