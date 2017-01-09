@@ -25,6 +25,7 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
@@ -33,6 +34,8 @@ Cv11View::Cv11View()
 {
 	shape = 0;
 	color = 0;
+	point.x = 100;
+	point.y = 100;
 }
 
 Cv11View::~Cv11View()
@@ -51,6 +54,15 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen pen;
+	pen.CreatePen(PS_SOLID, shape, color);
+	pDC->SelectObject(pen);
+	if (shape == 0)
+		pDC->Rectangle(rc);
+	if (shape == 1)
+		pDC->Ellipse(rc);
+	if (shape == 2)
+		pDC->RoundRect(rc, point);
 }
 
 
@@ -117,3 +129,12 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 // Cv11View message handlers
 
+
+
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	CRectTracker tracker;
+	if (tracker.TrackRubberBand(this, point))
+		rc = tracker.m_rect;
+	Invalidate();
+}
