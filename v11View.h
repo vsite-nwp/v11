@@ -39,6 +39,12 @@ protected:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	DECLARE_MESSAGE_MAP()
 public:
+	CRect rc;
+	COLORREF color;
+	int shape;
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnShape();
+	afx_msg void OnColor();
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp
