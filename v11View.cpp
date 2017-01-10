@@ -37,6 +37,8 @@ Cv11View::Cv11View()
 {
 	shape = 0;
 	color = 0;
+	tempColor = 0;
+	tempShape = 0;
 	point.x = 100;
 	point.y = 100;
 }
@@ -172,19 +174,23 @@ LRESULT Cv11View::OnHighlight(WPARAM wp, LPARAM lp)
 	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
 	UINT id = pElem->GetID(); // button id (ID_SHAPE, ID_COLOR)
 	
-	if (id == ID_SHAPE) {
-		if (index = -1)
+	if (id == ID_SHAPE) 
+	{
+		if (index == -1)
 			shape = tempShape;
 		else
 			shape = index;
 	}
-	else if (id = ID_COLOR) {
-		if (index = -1)
+	else if (id = ID_COLOR) 
+	{
+		if (index == -1)
 			color = tempColor;
-		else {
+		else 
+		{
 			CMFCRibbonColorButton* clr = (CMFCRibbonColorButton*)pElem;
 			color = clr->GetHighlightedColor();
 		}
 	}		
+	Invalidate();
 	return 0;	
 }
