@@ -60,7 +60,7 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 void Cv11View::OnDraw(CDC* pDC)
 {
 	CPen pen;
-	pen.CreatePen(PS_SOLID, shape, color);
+	pen.CreatePen(PS_SOLID, 5, color);
 	pDC->SelectObject(pen);
 	if (shape == 0)
 		pDC->Rectangle(rc);
@@ -181,7 +181,7 @@ LRESULT Cv11View::OnHighlight(WPARAM wp, LPARAM lp)
 		else
 			shape = index;
 	}
-	else if (id = ID_COLOR) 
+	else if (id == ID_COLOR) 
 	{
 		if (index == -1)
 			color = tempColor;

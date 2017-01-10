@@ -25,7 +25,7 @@ END_MESSAGE_MAP()
 // CMainFrame construction/destruction
 
 LRESULT CMainFrame::OnHighlight(WPARAM wp, LPARAM lp) {
-	return GetActiveWindow()->SendMessage(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, wp, lp);
+	return GetActiveView()->SendMessage(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, wp, lp);
 }
 
 CMainFrame::CMainFrame()
