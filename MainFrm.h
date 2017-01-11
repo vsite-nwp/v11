@@ -9,7 +9,7 @@ protected: // create from serialization only
 
 // Attributes
 public:
-
+	LRESULT OnHighlightRibbonListItem(WPARAM wp, LPARAM lp);
 // Operations
 public:
 
