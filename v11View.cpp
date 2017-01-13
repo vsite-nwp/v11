@@ -20,6 +20,7 @@ IMPLEMENT_DYNCREATE(Cv11View, CView)
 
 BEGIN_MESSAGE_MAP(Cv11View, CView)
 	// Standard printing commands
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, OnHighlightRibbonListItem)
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
@@ -156,6 +157,7 @@ void Cv11View::OnShape()
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
 
 	shape = pGallery->GetSelectedItem();
+	currentShape = pGallery->GetSelectedItem();
 
 	Invalidate();
 }
@@ -168,6 +170,37 @@ void Cv11View::OnColor()
 	CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)arr.GetAt(0);
 
 	color = pColor->GetColor();
+	currentColor = pColor->GetColor();
 
 	Invalidate();
 }
+
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
+{
+	int index = (int)wp;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElem->GetID(); // button id (ID_SHAPE, ID_COLOR)
+
+	if (id == ID_SHAPE)
+	{
+		if (index == -1)
+			shape = currentShape;
+		else
+			shape = index;
+	}
+	else if (id == ID_COLOR)
+	{
+		if (index == -1)
+			color = currentColor;
+		else
+		{
+			CMFCRibbonColorButton* col = (CMFCRibbonColorButton*)pElem;
+			color = col->GetHighlightedColor();
+		}
+	}
+
+	Invalidate();
+
+	return 0;
+}
+

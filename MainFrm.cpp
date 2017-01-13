@@ -12,6 +12,7 @@
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWndEx)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, OnHighlightRibbonListItem)
 	ON_WM_CREATE()
 	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_WIN_2000, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
@@ -199,3 +200,7 @@ void CMainFrame::OnUpdateFilePrintPreview(CCmdUI* pCmdUI)
 	pCmdUI->SetCheck(IsPrintPreview());
 }
 
+LRESULT CMainFrame::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
+{
+	return GetActiveView()->SendMessage(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, wp, lp);
+}
