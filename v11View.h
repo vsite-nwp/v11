@@ -3,9 +3,13 @@
 class Cv11View : public CView
 {
 	int shape;
+	int shape_view;
+	COLORREF color_view;
 	COLORREF color;
 	CRect rc;
-protected: // create from serialization only
+protected:
+	LRESULT OnHighlightRibbonListItem(WPARAM wp, LPARAM lp);
+	// create from serialization only
 	Cv11View();
 	DECLARE_DYNCREATE(Cv11View)
 

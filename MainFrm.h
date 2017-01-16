@@ -3,7 +3,9 @@
 class CMainFrame : public CFrameWndEx
 {
 	
-protected: // create from serialization only
+protected:
+	LRESULT  OnHighlight(WPARAM wp, LPARAM lp);
+	// create from serialization only
 	CMainFrame();
 	DECLARE_DYNCREATE(CMainFrame)
 
