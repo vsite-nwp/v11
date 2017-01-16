@@ -3,6 +3,9 @@
 class Cv11View : public CView
 {
 protected: // create from serialization only
+	CRect rc;
+	COLORREF col;
+	int shape;
 	Cv11View();
 	DECLARE_DYNCREATE(Cv11View)
 
@@ -15,6 +18,7 @@ public:
 
 // Overrides
 public:
+
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 protected:
@@ -39,6 +43,7 @@ protected:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	DECLARE_MESSAGE_MAP()
 public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp
