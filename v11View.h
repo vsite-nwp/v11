@@ -4,8 +4,8 @@ class Cv11View : public CView
 {
 protected: // create from serialization only
 	CRect rc;
-	COLORREF col;
-	int shape;
+	COLORREF col,copyCol;
+	int shape,copyShape;
 	Cv11View();
 	DECLARE_DYNCREATE(Cv11View)
 
@@ -38,6 +38,7 @@ protected:
 
 // Generated message map functions
 protected:
+	LRESULT OnHighlightRibbonListItem(WPARAM wp, LPARAM lp);
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);

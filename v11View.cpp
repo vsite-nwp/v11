@@ -20,6 +20,7 @@ IMPLEMENT_DYNCREATE(Cv11View, CView)
 
 BEGIN_MESSAGE_MAP(Cv11View, CView)
 	// Standard printing commands
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, OnHighlightRibbonListItem)
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
@@ -35,6 +36,8 @@ END_MESSAGE_MAP()
 Cv11View::Cv11View() {
 	shape = 0;
 	col = 0;
+	copyCol = 0;
+	copyShape = 0;
 }
 
 Cv11View::~Cv11View()
@@ -53,7 +56,7 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
-	CPen pen(PS_SOLID,3,col);
+	CBrush pen(col);
 	pDC->SelectObject(&pen);
 	switch (shape) {
 	case 0:
@@ -146,19 +149,43 @@ void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 
 void Cv11View::OnShape()
 {
+
+
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
 	shape=pGallery->GetSelectedItem();
+	copyShape = shape;
 	Invalidate();
 }
 
 
 void Cv11View::OnColor()
 {
+	
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
 	CMFCRibbonColorButton* pGallery = (CMFCRibbonColorButton*)arr.GetAt(0);
 	col = pGallery->GetColor();
+	copyCol = col;
 	Invalidate();
 }
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
+{
+	
+	int index = (int)wp;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElem->GetID();
+	switch (id) {
+	case ID_SHAPE:
+		shape = index < 0 ? copyShape : index;
+		break;
+	case ID_COLOR:
+		col=index<0? copyCol: ((CMFCRibbonColorButton*)pElem)->GetHighlightedColor();
+		break;
+	}
+	Invalidate();
+	return 0;
+
+}
+
