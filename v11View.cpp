@@ -25,11 +25,16 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View() {
+	this->shape = 0;
+	this->color = 0;
+}
 
 Cv11View::~Cv11View()
 {
@@ -47,6 +52,9 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen pen(PS_SOLID,1,color);
+	pDC->SelectObject(&pen);
+	
 }
 
 
@@ -113,3 +121,35 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 // Cv11View message handlers
 
+
+
+void Cv11View::OnShape()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+	int index = pGallery->GetSelectedItem();
+	switch (index)
+	{
+	case 0:
+		break;
+	case 1:
+
+		break;
+	case 2:
+		break;
+
+	default:
+		break;
+	}
+}
+
+
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	CRectTracker track;
+	track.TrackRubberBand(this, point, 0);
+	Invalidate();
+
+	CView::OnLButtonDown(nFlags, point);
+}

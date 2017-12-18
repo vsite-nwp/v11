@@ -2,6 +2,7 @@
 
 class Cv11View : public CView
 {
+
 protected: // create from serialization only
 	Cv11View();
 	DECLARE_DYNCREATE(Cv11View)
@@ -12,6 +13,9 @@ public:
 
 // Operations
 public:
+	CRect rc;
+	COLORREF color;
+	int shape;
 
 // Overrides
 public:
@@ -39,6 +43,8 @@ protected:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	DECLARE_MESSAGE_MAP()
 public:
+	afx_msg void OnShape();
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp
