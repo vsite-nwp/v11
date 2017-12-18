@@ -25,11 +25,18 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_LBUTTONDOWN()
+	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, OnHighlightRibbonListItem)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View() {
+	color = 0;
+	shape = 0;
+}
 
 Cv11View::~Cv11View()
 {
@@ -47,6 +54,20 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen pen(PS_SOLID, 0, color);
+	CPen* oldPen = pDC->SelectObject(&pen);
+	switch (shape) {
+	case 0:
+		pDC->Rectangle(&rc);
+		break;
+	case 1:
+		pDC->Ellipse(&rc);
+		break;
+	case 2:
+		pDC->RoundRect(&rc,CPoint(30,30));
+		break;
+	}
+	pDC->SelectObject(oldPen);
 }
 
 
@@ -89,6 +110,14 @@ void Cv11View::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 #endif
 }
 
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
+{
+	int index = (int)wp;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElem->GetID(); // button id (ID_SHAPE, ID_COLOR)
+							  // ...
+}
+
 
 // Cv11View diagnostics
 
@@ -113,3 +142,32 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 // Cv11View message handlers
 
+
+
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	CRectTracker tracker;
+	if(tracker.TrackRubberBand(this,point))
+		rc = tracker.m_rect;
+	Invalidate();
+}
+
+
+void Cv11View::OnColor()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* pButton = (CMFCRibbonColorButton*)arr.GetAt(0);
+	color = pButton->GetColor();
+	Invalidate();
+}
+
+
+void Cv11View::OnShape()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+	shape = pGallery->GetSelectedItem();
+	Invalidate();
+}
