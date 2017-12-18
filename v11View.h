@@ -1,4 +1,5 @@
 #pragma once
+#include "atltypes.h"
 
 class Cv11View : public CView
 {
@@ -9,7 +10,9 @@ protected: // create from serialization only
 // Attributes
 public:
 	Cv11Doc* GetDocument() const;
-
+	CRect rc;
+	COLORREF color;
+	int shape;
 // Operations
 public:
 
@@ -39,6 +42,9 @@ protected:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	DECLARE_MESSAGE_MAP()
 public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnColor();
+	afx_msg void OnShape();
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp
