@@ -178,6 +178,7 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp) {
 	if (index == -1) {
 		shape = shapeCp;
 		color = colorCp;
+		Invalidate();
 		return 0;
 	}
 
