@@ -10,8 +10,8 @@ protected: // create from serialization only
 public:
 	Cv11Doc* GetDocument() const;
 	CRect rc;
-	COLORREF color;
-	int shape;
+	COLORREF color,colorSave;
+	int shape,shapeSave;
 
 // Operations
 public:
