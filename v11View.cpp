@@ -142,8 +142,8 @@ void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	//rc.left = point.x; rc.top = point.y;
 	CRectTracker tracker;
-	tracker.TrackRubberBand(this, point);
-	rc = tracker.m_rect;
+	if(tracker.TrackRubberBand(this, point))
+		rc = tracker.m_rect;
 
 	CView::OnLButtonDown(nFlags, point);
 	Invalidate();
@@ -188,8 +188,8 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp) {
 		shape = index;
 		break;
 	case ID_COLOR: {
-		CMFCRibbonColorButton hlColor;
-		color = hlColor.GetHighlightedColor();
+		CMFCRibbonColorButton* hlColor=(CMFCRibbonColorButton*)pElem;
+		color = hlColor->GetHighlightedColor();
 		break;
 	}
 	}
