@@ -56,17 +56,17 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
-	CPen pen(PS_SOLID, 0, color);
+	CPen pen(PS_SOLID, 3, color);
 	CPen* oldPen = pDC->SelectObject(&pen);
 	switch (shape) {
 	case 0:
-		pDC->Rectangle(&rc);
+		pDC->Rectangle(rc);
 		break;
 	case 1:
-		pDC->Ellipse(&rc);
+		pDC->Ellipse(rc);
 		break;
 	case 2:
-		pDC->RoundRect(&rc,CPoint(30,30));
+		pDC->RoundRect(rc,CPoint(30,30));
 		break;
 	}
 	pDC->SelectObject(oldPen);
