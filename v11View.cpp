@@ -28,19 +28,20 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_WM_LBUTTONDOWN()
 	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
 	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
-	ON_COMMAND(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, OnHighlightRibbonListItem)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, OnHighlightRibbonListItem)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
-
-Cv11View::~Cv11View()
-{
+Cv11View::Cv11View() {
 	shape = 0;
 	color = 0;
 	shapeCp = shape;
 	colorCp = color;
+}
+
+Cv11View::~Cv11View()
+{
 }
 
 BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
@@ -67,6 +68,7 @@ void Cv11View::OnDraw(CDC* pDC)
 		break;
 	case 2:
 		pDC->RoundRect(rc, CPoint(10, 10));
+		break;
 	}
 
 	pDC->SelectObject(oldPen);
@@ -155,6 +157,7 @@ void Cv11View::OnShape()
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
 
 	shape = pGallery->GetSelectedItem();
+	shapeCp = shape;
 	Invalidate();
 }
 
@@ -166,9 +169,31 @@ void Cv11View::OnColor()
 	CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)arr.GetAt(0);
 
 	color = pColor->GetColor();
+	colorCp = color;
 	Invalidate();
 }
 
 LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp) {
-	
+	int index = (int)wp;
+	if (index == -1) {
+		shape = shapeCp;
+		color = colorCp;
+		return 0;
+	}
+
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElem->GetID();
+	switch (id) {
+	case ID_SHAPE:
+		shape = index;
+		break;
+	case ID_COLOR: {
+		CMFCRibbonColorButton hlColor;
+		color = hlColor.GetHighlightedColor();
+		break;
+	}
+	}
+
+	Invalidate();
+	return 0;
 }
