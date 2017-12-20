@@ -186,20 +186,25 @@ LRESULT Cv11View::OnHighlight(WPARAM wp, LPARAM lp)
 	UINT id = pElem->GetID();
 	CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)pElem;
 
-	if(index==-1)
-	{
-		shape = prevShape;
-		color = prevColor;
-		Invalidate();
-	}
-
 	switch (id)
 	{
 	case ID_SHAPE:
+		if (index == -1)
+		{
+			shape = prevShape;
+			Invalidate();
+			break;
+		}
 		shape = index;
 		Invalidate();
 		break;
 	case ID_COLOR:
+		if (index == -1)
+		{
+			color = prevColor;
+			Invalidate();
+			break;
+		}
 		color = pColor->GetHighlightedColor();
 		Invalidate();
 		break;
