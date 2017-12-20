@@ -3,13 +3,13 @@
 class CMainFrame : public CFrameWndEx
 {
 	
+	
 protected: // create from serialization only
 	CMainFrame();
 	DECLARE_DYNCREATE(CMainFrame)
 
 // Attributes
 public:
-
 // Operations
 public:
 
@@ -39,6 +39,7 @@ protected:
 	afx_msg void OnFilePrint();
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnUpdateFilePrintPreview(CCmdUI* pCmdUI);
+	LRESULT CMainFrame::OnHighlight(WPARAM wp,LPARAM lp);
 	DECLARE_MESSAGE_MAP()
 
 };
