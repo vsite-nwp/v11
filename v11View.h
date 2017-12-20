@@ -4,6 +4,7 @@ class Cv11View : public CView
 {
 protected: // create from serialization only
 	Cv11View();
+	
 	DECLARE_DYNCREATE(Cv11View)
 
 // Attributes
@@ -37,8 +38,18 @@ protected:
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+	afx_msg LRESULT OnHighlight(WPARAM, LPARAM);
+	
 	DECLARE_MESSAGE_MAP()
 public:
+
+	CRect rc;
+	COLORREF color,prevColor;
+	int shape, prevShape;
+	
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnShape();
+	afx_msg void OnColor();
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp
