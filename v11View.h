@@ -11,8 +11,8 @@ protected: // create from serialization only
 public:
 	Cv11Doc* GetDocument() const;
 	CRect rc;
-	COLORREF color;
-	int shape;
+	COLORREF color, prevColor;
+	int shape, prevShape;
 // Operations
 public:
 
@@ -20,6 +20,7 @@ public:
 public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual LRESULT OnHighlightRibbonListItem(WPARAM wp, LPARAM lp);
 protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);

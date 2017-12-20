@@ -16,6 +16,7 @@ public:
 // Overrides
 public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual LRESULT OnHighlightRibbonListItem(WPARAM wp, LPARAM lp);
 
 // Implementation
 public:
@@ -39,6 +40,7 @@ protected:
 	afx_msg void OnFilePrint();
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnUpdateFilePrintPreview(CCmdUI* pCmdUI);
+	afx_msg LRESULT OnHighlightItem(WPARAM wp, LPARAM lp);
 	DECLARE_MESSAGE_MAP()
 
 };
