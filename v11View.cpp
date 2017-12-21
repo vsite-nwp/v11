@@ -189,27 +189,15 @@ LRESULT Cv11View::OnHighlight(WPARAM wp, LPARAM lp)
 	switch (id)
 	{
 	case ID_SHAPE:
-		if (index == -1)
-		{
-			shape = prevShape;
-			Invalidate();
-			break;
-		}
-		shape = index;
-		Invalidate();
+		shape = index >= 0 ? index : prevShape;
 		break;
 	case ID_COLOR:
-		if (index == -1)
-		{
-			color = prevColor;
-			Invalidate();
-			break;
-		}
-		color = pColor->GetHighlightedColor();
-		Invalidate();
+		color = index >= 0 ? pColor->GetHighlightedColor() : prevColor;
 		break;
 	default:
-		break;
+		return 0;
 	}
-	return 0;
+
+	Invalidate();
+	
 }
