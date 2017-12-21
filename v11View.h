@@ -9,7 +9,9 @@ protected: // create from serialization only
 // Attributes
 public:
 	Cv11Doc* GetDocument() const;
-
+	CRect rc;
+	COLORREF color, prevColor;
+	int shape, prevShape;
 // Operations
 public:
 
@@ -17,6 +19,7 @@ public:
 public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual LRESULT OnHighlightRibbonListItem(WPARAM wp, LPARAM lp);
 protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
@@ -39,6 +42,9 @@ protected:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	DECLARE_MESSAGE_MAP()
 public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnColor();
+	afx_msg void OnShape();
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp
