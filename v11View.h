@@ -1,5 +1,4 @@
 #pragma once
-#include "atltypes.h"
 
 class Cv11View : public CView
 {

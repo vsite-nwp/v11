@@ -33,7 +33,7 @@ END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() : shape(0)
+Cv11View::Cv11View()
 {
 	shape = 0;
 	color = 0;
@@ -57,7 +57,7 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
-	HPEN pen = CreatePen(PS_SOLID, 1, color);
+	CPen pen(PS_SOLID, 1, color);
 	pDC->SelectObject(pen);
 	switch (shape)
 	{
@@ -143,7 +143,7 @@ void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 	CRectTracker CRT;
 	if (CRT.TrackRubberBand(this, point, TRUE))
 		rc = CRT.m_rect;
-	InvalidateRect(rc, TRUE);
+	Invalidate();
 }
 
 
