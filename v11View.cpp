@@ -69,7 +69,7 @@ void Cv11View::OnDraw(CDC* pDC)
 		pDC->RoundRect(rc, {20,20});
 		break;
 	}
-	pDC->SelectObject(pen);
+	pDC->SelectObject(pen2);
 }
 
 // Cv11View printing
