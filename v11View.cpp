@@ -27,6 +27,7 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_WM_RBUTTONUP()
 	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
 	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
@@ -52,11 +53,13 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
-	pDC->SelectObject(CreatePen(PS_SOLID, 0, color));
+	CPen pc;
+	pc.CreatePen(PS_SOLID, 1, color);
+	pDC->SelectObject(&pc);
 	switch (shape) {
-	case 0: pDC->Rectangle();
-	case 1: pDC->Ellipse();
-	case 2: pDC->RoundRect();
+	case 0: {pDC->Rectangle(cr); break;} 
+	case 1: {pDC->Ellipse(cr); break;}
+	case 2: {pDC->RoundRect(cr, { 20,20 }); break;}
 	}
 }
 
@@ -131,6 +134,7 @@ void Cv11View::OnShape()
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+	Invalidate();
 	// TODO: Add your command handler code here
 }
 
@@ -141,4 +145,15 @@ void Cv11View::OnColor()
 	color = rcb.GetColor();
 	Invalidate();
 	// TODO: Add your command handler code here
+}
+
+
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+	CRectTracker ctr;
+	if(ctr.TrackRubberBand(this, point)!=0);
+		cr = ctr.m_rect;
+	Invalidate();
+	CView::OnLButtonDown(nFlags, point);
 }
