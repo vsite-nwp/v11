@@ -33,8 +33,9 @@ END_MESSAGE_MAP()
 // Cv11View construction/destruction
 
 Cv11View::Cv11View() {
-	CRect rc = 0;
+	//	CRect rc = 0;
 	COLORREF color = 0;
+	int shape = 0;
 }
 
 Cv11View::~Cv11View()
@@ -57,7 +58,7 @@ void Cv11View::OnDraw(CDC* pDC)
 	pc.CreatePen(PS_SOLID, 1, color);
 	pDC->SelectObject(&pc);
 	switch (shape) {
-	case 0: {pDC->Rectangle(cr); break;} 
+	case 0: {pDC->Rectangle(cr); break;}
 	case 1: {pDC->Ellipse(cr); break;}
 	case 2: {pDC->RoundRect(cr, { 20,20 }); break;}
 	}
@@ -134,6 +135,7 @@ void Cv11View::OnShape()
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+	shape = pGallery->GetSelectedItem();
 	Invalidate();
 	// TODO: Add your command handler code here
 }
@@ -141,8 +143,11 @@ void Cv11View::OnShape()
 
 void Cv11View::OnColor()
 {
-	CMFCRibbonColorButton rcb;
-	color = rcb.GetColor();
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* pGallery = (CMFCRibbonColorButton*)arr.GetAt(0);
+	//CMFCRibbonColorButton rcb;
+	color = pGallery->GetColor();
 	Invalidate();
 	// TODO: Add your command handler code here
 }
