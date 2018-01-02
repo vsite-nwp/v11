@@ -34,8 +34,8 @@ END_MESSAGE_MAP()
 // Cv11View construction/destruction
 
 Cv11View::Cv11View() {
-	COLORREF color = 0;
-	int shape = 0;
+	color = 0, prev_color = 0;
+	shape = 0, prev_shape = 0;
 }
 
 Cv11View::~Cv11View()
@@ -44,9 +44,6 @@ Cv11View::~Cv11View()
 
 BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
-
 	return CView::PreCreateWindow(cs);
 }
 
@@ -58,9 +55,9 @@ void Cv11View::OnDraw(CDC* pDC)
 	pc.CreatePen(PS_SOLID, 1, color);
 	pDC->SelectObject(&pc);
 	switch (shape) {
-	case 0: {pDC->Rectangle(cr); break;}
-	case 1: {pDC->Ellipse(cr); break;}
-	case 2: {pDC->RoundRect(cr, { 20,20 }); break;}
+	case 0: pDC->Rectangle(cr); break;
+	case 1: pDC->Ellipse(cr); break;
+	case 2: pDC->RoundRect(cr, { 20,20 }); break;
 	}
 }
 
@@ -81,15 +78,9 @@ BOOL Cv11View::OnPreparePrinting(CPrintInfo* pInfo)
 	return DoPreparePrinting(pInfo);
 }
 
-void Cv11View::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
-{
-	// TODO: add extra initialization before printing
-}
+void Cv11View::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/){}
 
-void Cv11View::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
-{
-	// TODO: add cleanup after printing
-}
+void Cv11View::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/){}
 
 void Cv11View::OnRButtonUp(UINT /* nFlags */, CPoint point)
 {
@@ -138,7 +129,6 @@ void Cv11View::OnShape()
 	shape = pGallery->GetSelectedItem();
 	prev_shape = shape;
 	Invalidate();
-	// TODO: Add your command handler code here
 }
 
 
@@ -150,18 +140,15 @@ void Cv11View::OnColor()
 	color = pGallery->GetColor();
 	prev_color = color;
 	Invalidate();
-	// TODO: Add your command handler code here
 }
 
 
 void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
 	CRectTracker ctr;
 	if(ctr.TrackRubberBand(this, point))
 		cr = ctr.m_rect;
 	Invalidate();
-	CView::OnLButtonDown(nFlags, point);
 }
 
 LRESULT Cv11View::OnHighlight(WPARAM wp, LPARAM lp)
@@ -181,5 +168,5 @@ LRESULT Cv11View::OnHighlight(WPARAM wp, LPARAM lp)
 			color = rcb->GetHighlightedColor();
 	}
 	Invalidate();
-	return 13;
+	return 0;
 }
