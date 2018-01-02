@@ -28,12 +28,12 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
 	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
 	ON_WM_LBUTTONDOWN()
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, OnHighlight)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
 Cv11View::Cv11View() {
-	//	CRect rc = 0;
 	COLORREF color = 0;
 	int shape = 0;
 }
@@ -136,6 +136,7 @@ void Cv11View::OnShape()
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
 	shape = pGallery->GetSelectedItem();
+	prev_shape = shape;
 	Invalidate();
 	// TODO: Add your command handler code here
 }
@@ -146,8 +147,8 @@ void Cv11View::OnColor()
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
 	CMFCRibbonColorButton* pGallery = (CMFCRibbonColorButton*)arr.GetAt(0);
-	//CMFCRibbonColorButton rcb;
 	color = pGallery->GetColor();
+	prev_color = color;
 	Invalidate();
 	// TODO: Add your command handler code here
 }
@@ -157,8 +158,28 @@ void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CRectTracker ctr;
-	if(ctr.TrackRubberBand(this, point)!=0);
+	if(ctr.TrackRubberBand(this, point))
 		cr = ctr.m_rect;
 	Invalidate();
 	CView::OnLButtonDown(nFlags, point);
+}
+
+LRESULT Cv11View::OnHighlight(WPARAM wp, LPARAM lp)
+{
+	int index = (int)wp;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	CMFCRibbonColorButton* rcb = (CMFCRibbonColorButton*)lp;
+	UINT id = pElem->GetID(); 
+	if (index == -1) {
+		color = prev_color;
+		shape = prev_shape;
+	}
+	else {
+		if (id == ID_SHAPE)
+			shape = index;
+		if (id == ID_COLOR)
+			color = rcb->GetHighlightedColor();
+	}
+	Invalidate();
+	return 13;
 }

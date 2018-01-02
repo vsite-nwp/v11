@@ -25,7 +25,7 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-	CMFCRibbonBar     m_wndRibbonBar;
+	 CMFCRibbonBar m_wndRibbonBar;
 protected:  // control bar embedded members
 	CMFCRibbonApplicationButton m_MainButton;
 	CMFCToolBarImages m_PanelImages;
@@ -39,6 +39,7 @@ protected:
 	afx_msg void OnFilePrint();
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnUpdateFilePrintPreview(CCmdUI* pCmdUI);
+	afx_msg LRESULT OnHighlight(WPARAM wp, LPARAM lp);
 	DECLARE_MESSAGE_MAP()
 
 };

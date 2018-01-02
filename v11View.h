@@ -9,12 +9,11 @@ protected: // create from serialization only
 // Attributes
 public:
 	Cv11Doc* GetDocument() const;
-	CRect rc;
-	COLORREF color;
-	int shape;
+	CRect cr;
+	COLORREF color, prev_color;
+	int shape, prev_shape;
 // Operations
 public:
-
 // Overrides
 public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
@@ -43,6 +42,8 @@ protected:
 public:
 	afx_msg void OnShape();
 	afx_msg void OnColor();
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg LRESULT OnHighlight(WPARAM wp, LPARAM lp);
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp
