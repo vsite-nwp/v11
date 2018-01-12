@@ -176,18 +176,18 @@ LRESULT Cv11View::OnHighlight(WPARAM wp, LPARAM lp)
 	UINT id = pElem->GetID();
 	LRESULT rez = 0;
 	switch (id) {
-	case ID_SHAPE:	
-		prevshape = shape;
-		shape = index;
+	case ID_SHAPE:
 		if (index == -1) {
-			 shape = prevshape;
+			shape = prevshape;
+		}
+		else {
+			shape = index;
 		}
 		rez = shape;
 		break;
 	case ID_COLOR:
 		CMFCRibbonColorButton * pColor = (CMFCRibbonColorButton*)lp;
-		color = pColor->GetColor();
-		prevcolor = color;
+		prevcolor = color = pColor->GetColor();
 		color = pColor->GetHighlightedColor();
 		if (index == -1) {
 			color = prevcolor;
@@ -198,3 +198,4 @@ LRESULT Cv11View::OnHighlight(WPARAM wp, LPARAM lp)
 	Invalidate();
 	return rez;
 }
+
