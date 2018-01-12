@@ -155,7 +155,7 @@ void Cv11View::OnShape()
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
-	shape = pGallery->GetSelectedItem();
+	shape = prevshape = pGallery->GetSelectedItem();
 	Invalidate();
 }
 
@@ -198,4 +198,5 @@ LRESULT Cv11View::OnHighlight(WPARAM wp, LPARAM lp)
 	Invalidate();
 	return rez;
 }
+
 
