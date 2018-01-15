@@ -4,6 +4,7 @@ class CMainFrame : public CFrameWndEx
 {
 	
 protected: // create from serialization only
+	LRESULT CMainFrame::OnHighlight(WPARAM wp, LPARAM lp);
 	CMainFrame();
 	DECLARE_DYNCREATE(CMainFrame)
 
@@ -24,8 +25,8 @@ public:
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
+	CMFCRibbonBar m_wndRibbonBar;
 
-	CMFCRibbonBar     m_wndRibbonBar;
 protected:  // control bar embedded members
 	CMFCRibbonApplicationButton m_MainButton;
 	CMFCToolBarImages m_PanelImages;
