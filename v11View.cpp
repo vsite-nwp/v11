@@ -42,8 +42,6 @@ Cv11View::~Cv11View()
 
 BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: Modify the Window class or styles here by modifying
-	//  the CREATESTRUCT cs
 
 	return CView::PreCreateWindow(cs);
 }
@@ -76,12 +74,10 @@ BOOL Cv11View::OnPreparePrinting(CPrintInfo* pInfo)
 
 void Cv11View::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
-	// TODO: add extra initialization before printing
 }
 
 void Cv11View::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
-	// TODO: add cleanup after printing
 }
 
 void Cv11View::OnRButtonUp(UINT /* nFlags */, CPoint point)
