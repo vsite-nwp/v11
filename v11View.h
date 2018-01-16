@@ -14,8 +14,8 @@ public:
 // Operations
 public:
 	CRect rc;
-	COLORREF color;
-	int shape;
+	COLORREF color, prev_color;
+	int shape, prev_shape;
 
 // Overrides
 public:
@@ -41,10 +41,12 @@ protected:
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+	afx_msg LRESULT Preview(WPARAM wp, LPARAM lp);
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnShape();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnColor();
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp
