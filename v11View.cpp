@@ -30,7 +30,8 @@ END_MESSAGE_MAP()
 // Cv11View construction/destruction
 
 Cv11View::Cv11View() {
-
+	shape = 0;
+	color = 0;
 }
 
 Cv11View::~Cv11View()
@@ -49,6 +50,16 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen pen;
+	pen.CreatePen(PS_SOLID, 5, color);
+	pDC->SelectObject(pen);
+
+	switch (shape) {
+	case 0: pDC->Rectangle(rc); break;
+	case 1: pDC->Ellipse(rc); break;
+	case 2: pDC->RoundRect(rc, { 20, 20 }); break;
+	default: break;
+	}
 }
 
 
