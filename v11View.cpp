@@ -27,7 +27,6 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONDOWN()
 	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
-	ON_COMMAND(PID_CODEPAGE, &Cv11View::OnColor)
 	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, OnHighlight)
 	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
 END_MESSAGE_MAP()
@@ -162,7 +161,6 @@ void Cv11View::OnLButtonDown(UINT flag, CPoint point)
 		rct = track.m_rect;
 
 	Invalidate();
-	CView::OnLButtonDown(flag, point);
 }
 
 	LRESULT Cv11View::OnHighlight(WPARAM wp, LPARAM lp)
