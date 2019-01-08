@@ -25,11 +25,22 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_LBUTTONDOWN()
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+	ON_COMMAND(PID_CODEPAGE, &Cv11View::OnColor)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, OnHighlight)
+	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View() 
+{
+	boja = 0;
+	oblik = 0;
+	poblik = 0;
+	pboja = 0;
+}
 
 Cv11View::~Cv11View()
 {
@@ -47,6 +58,16 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen kema;
+	kema.CreatePen(PS_SOLID, 3, boja);
+	pDC->SelectObject(kema);
+
+	if (oblik == 0)
+		pDC->Rectangle(rct);
+	else if (oblik == 1)
+		pDC->Ellipse(rct);
+	else
+		pDC->RoundRect(rct,CPoint(16,16));
 }
 
 
@@ -112,4 +133,62 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 
 // Cv11View message handlers
+
+void Cv11View::OnShape()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+	poblik = oblik = pGallery->GetSelectedItem();
+	Invalidate();
+	
+}
+
+void Cv11View::OnColor()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)arr.GetAt(0);
+	pboja = boja = pColor->GetColor();
+	Invalidate();
+
+}
+
+
+void Cv11View::OnLButtonDown(UINT flag, CPoint point)
+{
+	CRectTracker track;
+	if (track.TrackRubberBand(this, point) != 0)
+		rct = track.m_rect;
+
+	Invalidate();
+	CView::OnLButtonDown(flag, point);
+}
+
+	LRESULT Cv11View::OnHighlight(WPARAM wp, LPARAM lp)
+	{
+		int index = (int)wp;
+		CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+		UINT id = pElem->GetID();
+		if (index == -1)
+		{
+			oblik = poblik;
+			boja = pboja;
+		}
+		else if (id == ID_SHAPE)
+		{
+			oblik = index;
+		}
+		else if (id == ID_COLOR)
+		{
+			CMFCRibbonColorButton* rboja = (CMFCRibbonColorButton*)pElem;
+			boja = rboja->GetHighlightedColor();
+		}
+		
+		Invalidate();
+		return 0;
+	}
+
+
+
 
