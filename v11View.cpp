@@ -68,11 +68,7 @@ void Cv11View::OnDraw(CDC* pDC)
 	else
 		pDC->RoundRect(rct,CPoint(16,16));
 }
-
-
 // Cv11View printing
-
-
 void Cv11View::OnFilePrintPreview()
 {
 #ifndef SHARED_HANDLERS
