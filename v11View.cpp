@@ -23,6 +23,7 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
+	ON_WM_LBUTTONDOWN()
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
 END_MESSAGE_MAP()
@@ -65,6 +66,15 @@ void Cv11View::OnDraw(CDC* pDC)
 
 // Cv11View printing
 
+void Cv11View::OnLButtonDown(UINT flag, CPoint point)
+{
+	CRectTracker track;
+	if (track.TrackRubberBand(this, point) != 0)
+		rc = track.m_rect;
+
+	Invalidate();
+	CView::OnLButtonDown(flag, point);
+}
 
 void Cv11View::OnFilePrintPreview()
 {
@@ -101,6 +111,8 @@ void Cv11View::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
 #endif
 }
+
+
 
 
 // Cv11View diagnostics
