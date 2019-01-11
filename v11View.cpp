@@ -23,9 +23,13 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
-	ON_WM_LBUTTONDOWN()
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_LBUTTONDOWN()
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+	ON_COMMAND(PID_CODEPAGE, &Cv11View::OnColor)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, OnHighlight)
+	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
@@ -65,17 +69,6 @@ void Cv11View::OnDraw(CDC* pDC)
 
 
 // Cv11View printing
-
-void Cv11View::OnLButtonDown(UINT flag, CPoint point)
-{
-	CRectTracker track;
-	if (track.TrackRubberBand(this, point) != 0)
-		rc = track.m_rect;
-
-	Invalidate();
-	CView::OnLButtonDown(flag, point);
-}
-
 void Cv11View::OnFilePrintPreview()
 {
 #ifndef SHARED_HANDLERS
@@ -137,4 +130,58 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 
 // Cv11View message handlers
+
+void Cv11View::OnShape()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+	old_color = shape = pGallery->GetSelectedItem();
+	Invalidate();
+
+}
+
+void Cv11View::OnColor()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)arr.GetAt(0);
+	old_color = color = pColor->GetColor();
+	Invalidate();
+
+}
+
+
+void Cv11View::OnLButtonDown(UINT flag, CPoint point)
+{
+	CRectTracker track;
+	if (track.TrackRubberBand(this, point) != 0)
+		rc = track.m_rect;
+
+	Invalidate();
+	CView::OnLButtonDown(flag, point);
+}
+
+LRESULT Cv11View::OnHighlight(WPARAM wp, LPARAM lp)
+{
+	int index = (int)wp;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElem->GetID();
+	if (index == -1)
+	{
+		shape = old_shape= old_color;
+	}
+	else if (id == ID_SHAPE)
+	{
+		shape = index;
+	}
+	else if (id == ID_COLOR)
+	{
+		CMFCRibbonColorButton* rboja = (CMFCRibbonColorButton*)pElem;
+		color = rboja->GetHighlightedColor();
+	}
+
+	Invalidate();
+	return 0;
+}
 
