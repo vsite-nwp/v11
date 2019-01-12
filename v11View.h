@@ -8,6 +8,10 @@ protected: // create from serialization only
 
 // Attributes
 public:
+	CRect rc;
+	COLORREF color, oldColor;
+	int shape, oldShape;
+	int penSize = 4;
 	Cv11Doc* GetDocument() const;
 
 // Operations
@@ -16,6 +20,7 @@ public:
 // Overrides
 public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
+	virtual LRESULT OnHighlight(WPARAM wPar, LPARAM lPar);
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
@@ -36,7 +41,10 @@ protected:
 protected:
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+	afx_msg virtual void OnShape();
+	afx_msg virtual void OnColor();
 	DECLARE_MESSAGE_MAP()
 public:
 };

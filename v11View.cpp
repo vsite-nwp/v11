@@ -25,11 +25,20 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_LBUTTONDOWN()
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, OnHighlight)
+	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View() {
+	shape = 0;
+	color = 0;
+	oldShape = 0;
+	oldColor = 0;
+}
 
 Cv11View::~Cv11View()
 {
@@ -47,7 +56,61 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen selPen;
+	selPen.CreatePen(PS_SOLID, penSize, color);
+	pDC->SelectObject(selPen);
+	switch (shape) {
+	case 0:
+		pDC->Rectangle(rc);
+		break;
+	case 1:
+		pDC->Ellipse(rc);
+		break;
+	case 2:
+		pDC->RoundRect(rc, { 10, 10 });
+		break;
+	default:
+		break;
+	}
+
 }
+
+void Cv11View::OnShape() {
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> cArr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, cArr);
+	CMFCRibbonGallery* sGallery = (CMFCRibbonGallery*)cArr.GetAt(0);
+	oldShape = shape;
+	shape = sGallery->GetSelectedItem();;
+	Invalidate();
+}
+
+void Cv11View::OnColor() {
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> cArr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, cArr);
+	CMFCRibbonColorButton* selColor = (CMFCRibbonColorButton*)cArr.GetAt(0);
+	oldColor = color;
+	color = selColor->GetColor();
+	Invalidate();
+}
+
+LRESULT Cv11View::OnHighlight(WPARAM wPar, LPARAM lPar) {
+	int index = (int)wPar;
+	CMFCRibbonBaseElement* rElem = (CMFCRibbonBaseElement*)lPar;
+	CMFCRibbonColorButton* rColB = (CMFCRibbonColorButton*)lPar;
+	int rId = rElem->GetID();
+
+	if (index == -1) {
+		shape = oldShape;
+		color = oldColor;
+	}
+	else {
+		if (rId == ID_SHAPE) shape = index;
+		if (rId == ID_COLOR) color = rColB->GetHighlightedColor();
+	}
+	Invalidate();
+	return 0;
+}
+
 
 
 // Cv11View printing
@@ -74,6 +137,14 @@ void Cv11View::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 void Cv11View::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
 	// TODO: add cleanup after printing
+}
+
+void Cv11View::OnLButtonDown(UINT, CPoint point) {
+	CRectTracker crTrack;
+	if (crTrack.TrackRubberBand(this, point) != 0) {
+		rc = crTrack.m_rect;
+		Invalidate();
+	}
 }
 
 void Cv11View::OnRButtonUp(UINT /* nFlags */, CPoint point)
