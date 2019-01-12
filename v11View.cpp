@@ -27,7 +27,6 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONDOWN()
 	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
-	ON_COMMAND(PID_CODEPAGE, &Cv11View::OnColor)
 	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, OnHighlight)
 	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
 END_MESSAGE_MAP()
@@ -37,6 +36,8 @@ END_MESSAGE_MAP()
 Cv11View::Cv11View() {
 	shape = 0;
 	color = 0;
+	old_color = 0;
+	old_shape = 0;
 }
 
 Cv11View::~Cv11View()
@@ -136,7 +137,8 @@ void Cv11View::OnShape()
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
-	old_color = shape = pGallery->GetSelectedItem();
+	old_shape = pGallery->GetSelectedItem();
+	shape = old_shape;
 	Invalidate();
 
 }
@@ -146,7 +148,8 @@ void Cv11View::OnColor()
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
 	CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)arr.GetAt(0);
-	old_color = color = pColor->GetColor();
+	old_color = pColor->GetColor();
+	color = old_color;
 	Invalidate();
 
 }
@@ -156,32 +159,32 @@ void Cv11View::OnLButtonDown(UINT flag, CPoint point)
 {
 	CRectTracker track;
 	if (track.TrackRubberBand(this, point) != 0)
+	{
 		rc = track.m_rect;
-
-	Invalidate();
-	CView::OnLButtonDown(flag, point);
+		Invalidate();
+	}
 }
 
 LRESULT Cv11View::OnHighlight(WPARAM wp, LPARAM lp)
 {
 	int index = (int)wp;
 	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	CMFCRibbonColorButton* rcb = (CMFCRibbonColorButton*)lp;
 	UINT id = pElem->GetID();
-	if (index == -1)
-	{
-		shape = old_shape= old_color;
+
+	if (index == -1) {
+		shape = old_shape;
+		color = old_color;
 	}
-	else if (id == ID_SHAPE)
-	{
-		shape = index;
-	}
-	else if (id == ID_COLOR)
-	{
-		CMFCRibbonColorButton* rboja = (CMFCRibbonColorButton*)pElem;
-		color = rboja->GetHighlightedColor();
+	else {
+		if (id == ID_SHAPE)
+			shape = index;
+		if (id == ID_COLOR)
+			color = rcb->GetHighlightedColor();
 	}
 
 	Invalidate();
+
 	return 0;
 }
 
