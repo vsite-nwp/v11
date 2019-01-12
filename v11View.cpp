@@ -53,9 +53,10 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
-	HPEN pen = CreatePen(PS_SOLID, 3, prevColor);
-	auto oldpen = pDC->SelectObject(pen);
-	POINT p; p.x = 50; p.y = 50;
+	CPen pen;
+	pen.CreatePen(PS_SOLID, 3, prevColor);
+	pDC->SelectObject(pen);
+	CPoint p(50, 50);
 
 	switch (prevShape)
 	{
@@ -182,10 +183,10 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
 	switch (id)
 	{
 	case ID_SHAPE:
-		prevShape = index >= 0 ? index : prevShape;
+		prevShape = index >= 0 ? index : shape;
 		break;
 	case ID_COLOR:
-		prevColor = index >= 0 ? pColor->GetHighlightedColor() : prevColor;
+		prevColor = index >= 0 ? pColor->GetHighlightedColor() : color;
 		break;
 	default:
 		return 0;
