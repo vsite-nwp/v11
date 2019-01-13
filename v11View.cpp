@@ -58,10 +58,10 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 void Cv11View::OnDraw(CDC* pDC)
 {
 	CPen pen;
-	pen.CreatePen(PS_SOLID, 5, colorPreview);
+	pen.CreatePen(PS_SOLID, 5, color);
 	pDC->SelectObject(pen);
 
-	switch (shapePreview) {
+	switch (shape) {
 		case 0:
 			pDC->Rectangle(rc);
 			break;
@@ -87,18 +87,15 @@ void Cv11View::OnFilePrintPreview()
 
 BOOL Cv11View::OnPreparePrinting(CPrintInfo* pInfo)
 {
-	// default preparation
 	return DoPreparePrinting(pInfo);
 }
 
 void Cv11View::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
-	// TODO: add extra initialization before printing
 }
 
 void Cv11View::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
-	// TODO: add cleanup after printing
 }
 
 void Cv11View::OnRButtonUp(UINT /* nFlags */, CPoint point)
@@ -141,7 +138,6 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 void Cv11View::OnColor()
 {
-	// TODO: Add your command handler code here
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
 	CMFCRibbonColorButton* colorsBtn = (CMFCRibbonColorButton*)arr.GetAt(0);
@@ -153,7 +149,6 @@ void Cv11View::OnColor()
 
 void Cv11View::OnShape()
 {
-	// TODO: Add your command handler code here
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* shapeGallery = (CMFCRibbonGallery*)arr.GetAt(0);
@@ -165,8 +160,6 @@ void Cv11View::OnShape()
 
 void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
-
 	CRectTracker tracker;
 	if (tracker.TrackRubberBand(this, point, true))
 	{
@@ -179,19 +172,19 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
 {
 	int index = (int)wp;
 	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
-	UINT id = pElem->GetID(); // button id (ID_SHAPE, ID_COLOR)
+	UINT id = pElem->GetID();
 	
 	switch (id) {
 		case ID_COLOR:
 			if (index == -1)
-				colorPreview = color;
+				color = colorPreview;
 			else {
 				CMFCRibbonColorButton* colorBtn = (CMFCRibbonColorButton*)pElem;
-				colorPreview = colorBtn->GetHighlightedColor();
+				color = colorBtn->GetHighlightedColor();
 			}
 			break;
 		case ID_SHAPE:
-			index == -1 ? shapePreview = shape : shapePreview = index;
+			shape = index == -1 ? shapePreview : index;
 			break;
 	}
 
