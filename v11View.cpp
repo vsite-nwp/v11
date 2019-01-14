@@ -141,10 +141,10 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	CRectTracker tracker;
-	tracker.TrackRubberBand(this, point, true);
-	rc = tracker.m_rect;
-	Invalidate();
-	CView::OnLButtonDown(nFlags, point);
+	if (tracker.TrackRubberBand(this, point, true) != 0) {
+		rc = tracker.m_rect;
+		Invalidate();
+	}
 }
 
 
