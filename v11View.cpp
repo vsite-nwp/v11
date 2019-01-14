@@ -58,7 +58,7 @@ void Cv11View::OnDraw(CDC* pDC)
 	pDC->SelectObject(pen);
 	CPoint point(50, 50);
 		
-	switch (shape) {
+	switch (drawShape) {
 	case 0:
 		pDC->Rectangle(cr);
 		break;
@@ -178,7 +178,7 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
 			drawColor = color;
 		else {
 			CMFCRibbonColorButton* colorBtn = (CMFCRibbonColorButton*)pElem;
-			drawColor = colorBtn->GetColor();
+			drawColor = colorBtn->GetHighlightedColor();
 		}
 		break;
 	case ID_SHAPE:
