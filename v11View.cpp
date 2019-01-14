@@ -148,7 +148,7 @@ void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 	CRectTracker tracker;
 	if (tracker.TrackRubberBand(this, point)) {
 		rc = tracker.m_rect;
-		InvalidateRect(rc);
+		Invalidate();
 	}
 }
 
