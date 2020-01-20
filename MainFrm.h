@@ -27,6 +27,7 @@ public:
 
 	CMFCRibbonBar     m_wndRibbonBar;
 protected:  // control bar embedded members
+
 	CMFCRibbonApplicationButton m_MainButton;
 	CMFCToolBarImages m_PanelImages;
 	CMFCRibbonStatusBar  m_wndStatusBar;
@@ -39,6 +40,7 @@ protected:
 	afx_msg void OnFilePrint();
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnUpdateFilePrintPreview(CCmdUI* pCmdUI);
+	afx_msg LRESULT OnHighlightRibbonListItem(WPARAM wp, LPARAM lp);
 	DECLARE_MESSAGE_MAP()
 
 };
