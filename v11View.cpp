@@ -5,9 +5,9 @@
 #include "v11.h"
 #endif
 
+#include "mainfrm.h"
 #include "v11Doc.h"
 #include "v11View.h"
-#include "mainfrm.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -25,11 +25,15 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+    ON_WM_LBUTTONDOWN()
+    ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &Cv11View::OnHighlightRibbonListItem)
+    ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+    ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View()  : color(0), previousColor(0), shape(0), previousShape(0) {}
 
 Cv11View::~Cv11View()
 {
@@ -47,6 +51,15 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+    CPen pen;
+    pen.CreatePen(PS_SOLID, 3, color);
+    pDC->SelectObject(pen);
+    switch (shape)
+    {
+        case 0: pDC->Rectangle(&rc); break;
+        case 1: pDC->Ellipse(&rc); break;
+        case 2: pDC->RoundRect(&rc, POINT{ 30, 30 }); break;
+    }
 }
 
 
@@ -82,11 +95,83 @@ void Cv11View::OnRButtonUp(UINT /* nFlags */, CPoint point)
 	OnContextMenu(this, point);
 }
 
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
+{
+    int index = (int)wp;
+    CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+    UINT id = pElem->GetID();
+
+    switch (id) 
+    {
+        case ID_COLOR:
+        {  
+            if (index == -1) 
+            {
+                color = previousColor;
+            }
+            else 
+            {
+                CMFCRibbonColorButton* colorBtn = (CMFCRibbonColorButton*)pElem;
+                color = colorBtn->GetHighlightedColor();
+            }
+            break;
+        }
+        case ID_SHAPE:
+        {
+            if (index == -1)
+            {
+                shape = previousShape;
+            }
+            else
+            { 
+                shape = index;
+            }
+            break;
+        }
+        default:
+        {
+            return 0;
+        }
+    }
+}
+
 void Cv11View::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 {
 #ifndef SHARED_HANDLERS
 	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
 #endif
+}
+
+void Cv11View::OnShape()
+{
+    CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+    ((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+    CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+    previousShape = pGallery->GetSelectedItem();
+    shape = previousShape;
+
+    Invalidate();
+}
+
+void Cv11View::OnColor()
+{
+    CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+    ((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+    CMFCRibbonColorButton* pGallery = (CMFCRibbonColorButton*)arr.GetAt(0);
+    previousColor = pGallery->GetColor();
+    color = previousColor;
+    
+    Invalidate();
+}
+
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
+{
+    CRectTracker tracker;
+    if (tracker.TrackRubberBand(this, point)) 
+    {
+        rc = tracker.m_rect;
+        Invalidate();
+    }
 }
 
 
