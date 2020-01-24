@@ -52,7 +52,7 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 void Cv11View::OnDraw(CDC* pDC)
 {
 	CPen pen;
-	pen.CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
+	pen.CreatePen(PS_SOLID, 2, color);
 	pDC->SelectObject(pen);
 	switch (shape)
 	{
