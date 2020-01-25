@@ -34,9 +34,9 @@ END_MESSAGE_MAP()
 // Cv11View construction/destruction
 
 Cv11View::Cv11View() {
-	color = RGB(355, 355, 355);
+	color = RGB(0, 0, 0);
 	shape = 0;
-	previousColor = RGB(355, 355, 355);
+	previousColor = RGB(0, 0, 0);
 	previousShape = 0;
 	
 }
@@ -63,14 +63,14 @@ void Cv11View::OnDraw(CDC* pDC)
 {
 	CPen p;
 	p.CreatePen(PS_SOLID, 3, color);
-	HGDIOBJ holdPen = pDC->SelectObject(p);
+	pDC->SelectObject(p);
 	POINT pn = { 50, 50 };
 	if (shape == 0)
 		pDC->Rectangle(&rc);
 	if (shape == 1)
-		pDC->RoundRect(&rc, pn);
-	if (shape == 2)
 		pDC->Ellipse(&rc);
+	if (shape == 2)
+		pDC->RoundRect(&rc, pn);
 }
 
 
