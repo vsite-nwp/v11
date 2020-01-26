@@ -69,20 +69,7 @@ void Cv11View::OnDraw(CDC* pDC)
 		pDC->Ellipse(&rect);
 	if(oblik==2)
 		pDC->RoundRect(&rect, point);
-	/*switch (oblik)
-	{
-	case 0:
-		pDC->Rectangle(&rect);
-		break;
-	case 1:
-		pDC->Ellipse(&rect);
-		break;
-	case 2:
-		pDC->RoundRect(&rect, p);
-		break;
-	default:
-		break;
-	}*/
+	
 }
 
 
