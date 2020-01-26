@@ -29,7 +29,10 @@ END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View() {
+	color = RGB(0, 0, 0);
+	shape = 0;
+}
 
 Cv11View::~Cv11View()
 {
@@ -47,6 +50,25 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen pen;
+	pen.CreatePen(PS_SOLID, 3, color);
+	pDC->SelectObject(pen);
+	POINT point = { 50, 50 };
+
+	switch (shape) {
+	case 0:
+		pDC->Rectangle(&rc);
+		break;
+	case 1:
+		pDC->Ellipse(&rc);
+		break;
+	case 2:
+		pDC->RoundRect(&rc, point);
+		break;
+	default:
+		break;
+
+	}
 }
 
 
@@ -113,3 +135,10 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 // Cv11View message handlers
 
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point) {
+	CRectTracker tracker;
+	if (tracker.TrackRubberBand(this, point)) {
+		rc = tracker.m_rect;
+		Invalidate();
+	}
+}
