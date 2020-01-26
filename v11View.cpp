@@ -25,6 +25,10 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
+	ON_WM_LBUTTONDOWN()
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &Cv11View::OnHighlightRibbonListItem)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
@@ -32,6 +36,8 @@ END_MESSAGE_MAP()
 Cv11View::Cv11View() {
 	color = RGB(0, 0, 0);
 	shape = 0;
+	previousColor = RGB(0, 0, 0);
+	previousShape = 0;
 }
 
 Cv11View::~Cv11View()
@@ -148,6 +154,7 @@ void Cv11View::OnShape() {
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
 	shape = pGallery->GetSelectedItem();
+	previousShape = shape;
 	Invalidate();
 }
 
@@ -156,5 +163,34 @@ void Cv11View::OnColor() {
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
 	CMFCRibbonColorButton* pColorButton = (CMFCRibbonColorButton*)arr.GetAt(0);
 	color = pColorButton->GetColor();
+	previousColor = color;
 	Invalidate();
+}
+
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp) {
+	int index = (int)wp;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElem->GetID();
+
+	switch (id) {
+	case ID_COLOR:
+		if (index == -1) {
+			color = previousColor;
+		}
+		else {
+			CMFCRibbonColorButton* colorBtn = (CMFCRibbonColorButton*)pElem;
+			color = colorBtn->GetHighlightedColor();
+		}
+		break;
+	case ID_SHAPE:
+		if (index == -1) {
+			shape = previousShape;
+		}
+		else {
+			shape = index;
+		}
+		break;
+	}
+	Invalidate();
+	return 0;
 }
