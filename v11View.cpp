@@ -142,3 +142,19 @@ void Cv11View::OnLButtonDown(UINT nFlags, CPoint point) {
 		Invalidate();
 	}
 }
+
+void Cv11View::OnShape() {
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+	shape = pGallery->GetSelectedItem();
+	Invalidate();
+}
+
+void Cv11View::OnColor() {
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* pColorButton = (CMFCRibbonColorButton*)arr.GetAt(0);
+	color = pColorButton->GetColor();
+	Invalidate();
+}
