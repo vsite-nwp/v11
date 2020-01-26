@@ -36,7 +36,6 @@ protected:
 	afx_msg void OnFilePrint();
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnUpdateFilePrintPreview(CCmdUI* pCmdUI);
-	afx_msg LRESULT OnHighlight(WPARAM, LPARAM);
 	DECLARE_MESSAGE_MAP()
 
 };
