@@ -39,6 +39,7 @@ protected:
 	afx_msg void OnFilePrint();
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnUpdateFilePrintPreview(CCmdUI* pCmdUI);
+	afx_msg LRESULT OnHighlightRibbonListItem(WPARAM WW, LPARAM LL);
 	DECLARE_MESSAGE_MAP()
 
 };

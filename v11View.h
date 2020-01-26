@@ -12,6 +12,11 @@ public:
 
 // Operations
 public:
+	CRect rect;
+	COLORREF boja;
+	COLORREF prethodnaB;
+	int oblik;
+	int prethodniO;
 
 // Overrides
 public:
@@ -37,8 +42,12 @@ protected:
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+	afx_msg LRESULT OnHighlightRibbonListItem(WPARAM WW, LPARAM LL);
 	DECLARE_MESSAGE_MAP()
 public:
+	afx_msg void shape();
+	afx_msg void color();
+	afx_msg void buttonDown(UINT U, CPoint P);
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp

@@ -25,11 +25,23 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_COMMAND(ID_SHAPE, &Cv11View::shape)
+	ON_COMMAND(ID_COLOR, &Cv11View::color)
+	ON_WM_LBUTTONDOWN()
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &Cv11View::OnHighlightRibbonListItem)
+
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View() {
+	
+		boja = RGB(0, 0, 0);
+		prethodnaB = RGB(0, 0, 0);
+		oblik = 0;
+		prethodniO = 0;
+	
+}
 
 Cv11View::~Cv11View()
 {
@@ -47,6 +59,30 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen olovka;
+	olovka.CreatePen(PS_SOLID, 3, boja);
+	HGDIOBJ hp = pDC->SelectObject(olovka);
+	POINT point = { 10, 10 };
+	if(oblik==0)
+		pDC->Rectangle(&rect);
+	if(oblik==1)
+		pDC->Ellipse(&rect);
+	if(oblik==2)
+		pDC->RoundRect(&rect, point);
+	/*switch (oblik)
+	{
+	case 0:
+		pDC->Rectangle(&rect);
+		break;
+	case 1:
+		pDC->Ellipse(&rect);
+		break;
+	case 2:
+		pDC->RoundRect(&rect, p);
+		break;
+	default:
+		break;
+	}*/
 }
 
 
@@ -112,4 +148,65 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 
 // Cv11View message handlers
+void Cv11View::color()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> niz;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, niz);
+	CMFCRibbonColorButton* pColorButton = (CMFCRibbonColorButton*)niz.GetAt(0);
+	boja = pColorButton->GetColor();
+	prethodnaB = boja;
+	Invalidate();
+}
 
+void Cv11View::shape()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> niz;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, niz);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)niz.GetAt(0);
+	oblik = pGallery->GetSelectedItem();
+	prethodniO = oblik;
+	Invalidate();
+}
+
+void Cv11View::buttonDown(UINT F, CPoint P)
+{
+	CRectTracker tracker;
+	if (tracker.TrackRubberBand(this, P)) {
+		rect = tracker.m_rect;
+		Invalidate();
+	}
+}
+
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM WW, LPARAM LL)
+{
+	int index = (int)WW;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)LL;
+	UINT id = pElem->GetID();
+
+	switch (id)
+	{
+	case ID_COLOR:
+		if (index == -1)
+		{
+			boja = prethodnaB;
+		}
+		else {
+			CMFCRibbonColorButton* colorBtn = (CMFCRibbonColorButton*)pElem;
+			boja = colorBtn->GetHighlightedColor();
+		}
+		break;
+	case ID_SHAPE:
+		if (index == -1)
+		{
+			oblik = prethodniO;
+		}
+		else
+		{
+			oblik = index;
+		}
+		break;
+	}
+
+	Invalidate();
+	return 0;
+}
