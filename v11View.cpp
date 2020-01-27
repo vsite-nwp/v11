@@ -70,18 +70,20 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
-	myPen pen(pDC->m_hDC, color, PS_SOLID, 5);
+	CPen pen;
+	pen.CreatePen(PS_SOLID, 5, color);
+	pDC->SelectObject(pen);
 	switch (shape) {
 	case 0: {
-		Rectangle(pDC->m_hDC, rc.left, rc.top, rc.right, rc.bottom);
+		pDC->Rectangle(rc.left, rc.top, rc.right, rc.bottom);
 		break;
 	}
 	case 2: {
-		RoundRect(pDC->m_hDC, rc.left, rc.top, rc.right, rc.bottom, 20, 20);
+		pDC->RoundRect(rc.left, rc.top, rc.right, rc.bottom, 20, 20);
 		break;
 	}
 	case 1: {
-		Ellipse(pDC->m_hDC, rc.left, rc.top, rc.right, rc.bottom);
+		pDC->Ellipse(rc.left, rc.top, rc.right, rc.bottom);
 		break;
 	}
 	}
@@ -156,10 +158,10 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	CRectTracker tracker;
-	tracker.TrackRubberBand(this,point,1);
-	rc = tracker.m_rect;
+	if (tracker.TrackRubberBand(this, point, 1)) {
+		rc = tracker.m_rect;
+	}
 	Invalidate();
-	// TODO: Add your message handler code here and/or call default
 
 	CView::OnLButtonDown(nFlags, point);
 }
@@ -192,25 +194,20 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp) {
 	if (id == ID_SHAPE) {
 		if (index == -1) {
 			shape = prevshape;
-			Invalidate();
 		}
 		else {
-			//CMFCRibbonColorButton *colorbutt=(CMFCRibbonColorButton*)pElem;
 			shape = index;
-			//color=colorbutt->GetHighlightedColor();
-			Invalidate();
 		}
 	}
-	else if(id==ID_COLOR)
+	else if (id == ID_COLOR) {
 		if (index == -1) {
 			color = prevcolor;
-			Invalidate();
 		}
 		else {
-			CMFCRibbonColorButton *colorbutt=(CMFCRibbonColorButton*)pElem;
-			//shape = index;
-			color=colorbutt->GetHighlightedColor();
-			Invalidate();
+			CMFCRibbonColorButton *colorbutt = (CMFCRibbonColorButton*)pElem;
+			color = colorbutt->GetHighlightedColor();
 		}
+	}
+	Invalidate();
 	return 0;
 }
