@@ -201,6 +201,6 @@ void CMainFrame::OnUpdateFilePrintPreview(CCmdUI* pCmdUI)
 }
 
 LRESULT CMainFrame::OnHighlightRibbonListItem(WPARAM WW, LPARAM LL) {
-	GetActiveView()->SendMessage(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, WW, LL);
-	return 0;
+	return GetActiveView()->SendMessage(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, WW, LL);
+	
 }

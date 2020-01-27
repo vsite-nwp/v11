@@ -61,14 +61,34 @@ void Cv11View::OnDraw(CDC* pDC)
 {
 	CPen olovka;
 	olovka.CreatePen(PS_SOLID, 3, boja);
-	HGDIOBJ hp = pDC->SelectObject(olovka);
-	POINT point = { 10, 10 };
-	if(oblik==0)
+	pDC->SelectObject(olovka);
+	POINT point = { 100, 100 };
+	switch (oblik)
+	{
+	case 0:
+	{
+		pDC->Rectangle(&rect);
+		break;
+	}
+	case 1:
+	{
+		pDC->Ellipse(&rect);
+		break;
+	}
+	case 2:
+	{
+		pDC->RoundRect(&rect, point);
+		break;
+	}
+	default:
+		break;
+	}
+	/*if(oblik==0)
 		pDC->Rectangle(&rect);
 	if(oblik==1)
 		pDC->Ellipse(&rect);
 	if(oblik==2)
-		pDC->RoundRect(&rect, point);
+		pDC->RoundRect(&rect, point);*/
 	/*switch (oblik)
 	{
 	case 0:
@@ -148,6 +168,25 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 
 // Cv11View message handlers
+
+
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	CRectTracker tracker;
+
+	if (tracker.TrackRubberBand(this, point))
+		rect = tracker.m_rect;
+	Invalidate();
+}
+void Cv11View::shape()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> niz;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, niz);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)niz.GetAt(0);
+	oblik = pGallery->GetSelectedItem();
+	prethodniO = oblik;
+	Invalidate();
+}
 void Cv11View::color()
 {
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> niz;
@@ -158,55 +197,32 @@ void Cv11View::color()
 	Invalidate();
 }
 
-void Cv11View::shape()
-{
-	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> niz;
-	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, niz);
-	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)niz.GetAt(0);
-	oblik = pGallery->GetSelectedItem();
-	prethodniO = oblik;
-	Invalidate();
-}
 
-void Cv11View::buttonDown(UINT F, CPoint P)
-{
-	CRectTracker tracker;
-	if (tracker.TrackRubberBand(this, P)) {
-		rect = tracker.m_rect;
-		Invalidate();
-	}
-}
 
 LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM WW, LPARAM LL)
 {
+	
+
 	int index = (int)WW;
 	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)LL;
+	CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)LL;
 	UINT id = pElem->GetID();
 
 	switch (id)
 	{
 	case ID_COLOR:
 		if (index == -1)
-		{
 			boja = prethodnaB;
-		}
-		else {
-			CMFCRibbonColorButton* colorBtn = (CMFCRibbonColorButton*)pElem;
-			boja = colorBtn->GetHighlightedColor();
-		}
+		else
+			boja = pColor->GetHighlightedColor();
 		break;
 	case ID_SHAPE:
 		if (index == -1)
-		{
-			oblik = prethodniO;
-		}
+			oblik=prethodniO;
 		else
-		{
 			oblik = index;
-		}
 		break;
 	}
-
 	Invalidate();
 	return 0;
 }

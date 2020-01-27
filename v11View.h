@@ -47,7 +47,7 @@ protected:
 public:
 	afx_msg void shape();
 	afx_msg void color();
-	afx_msg void buttonDown(UINT U, CPoint P);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp
