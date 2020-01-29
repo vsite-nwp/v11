@@ -153,18 +153,23 @@ void Cv11View::OnLButtonDown(UINT flag, CPoint p) {
 LRESULT Cv11View::onHighlightRibbonListItem(WPARAM wp, LPARAM lp) {
 	int index = (int)wp;
 	CMFCRibbonBaseElement* pElement = (CMFCRibbonBaseElement*)lp;
+	CMFCRibbonColorButton* pcolor = (CMFCRibbonColorButton*)lp;
 	UINT ID = pElement->GetID();
-	if (index == -1) {
-		shape = prevShape;
-		color = prevColor;
+	switch (ID) {
+	case ID_COLOR:
+		if (index == -1)
+			color = prevColor;
+		else 
+			color = pcolor->GetHighlightedColor();
+			break;
+	case ID_SHAPE:
+		if (index == -1)
+			shape = prevShape;
+		else
+			shape = index;
+		break;
 	}
-	if (ID == ID_COLOR) {
-		CMFCRibbonColorButton* rColor = (CMFCRibbonColorButton*)pElement;
-		color = rColor->GetHighlightedColor();
-	}
-	if (ID == ID_SHAPE) {
-		shape = index;
-	}
+
 	Invalidate();
 	return 0;
 }
