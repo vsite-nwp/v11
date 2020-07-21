@@ -21,6 +21,7 @@ BEGIN_MESSAGE_MAP(Cv11App, CWinAppEx)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 	// Standard print setup command
 	ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinAppEx::OnFilePrintSetup)
+
 END_MESSAGE_MAP()
 
 
@@ -152,7 +153,7 @@ class CAboutDlg : public CDialogEx
 public:
 	CAboutDlg();
 
-// Dialog Data
+	// Dialog Data
 	enum { IDD = IDD_ABOUTBOX };
 
 protected:
@@ -202,6 +203,4 @@ void Cv11App::SaveCustomState()
 }
 
 // Cv11App message handlers
-
-
 
