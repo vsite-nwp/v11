@@ -17,3 +17,8 @@
 *.idb
 *.ilk
 *.log
+*.db-shm
+*.db-wal
+*.recipe
+/Debug
+/Release
