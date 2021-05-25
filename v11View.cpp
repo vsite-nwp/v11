@@ -194,9 +194,10 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
 		{
 			shape = prevShape;
 		}
-		shape = index;
-		break;
-	default:
+		else
+		{
+		    shape = index;
+		}
 		break;
 	}
 	Invalidate();
