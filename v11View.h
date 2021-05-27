@@ -9,9 +9,15 @@ protected: // create from serialization only
 // Attributes
 public:
 	Cv11Doc* GetDocument() const;
-
+	CRect rc;
+	COLORREF Color, lastColor;
+	int shape, lastShape;
 // Operations
 public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void ColorButton();
+	afx_msg void ShapeButton();
+	LRESULT OnHighlightRibbonListItem(WPARAM wp, LPARAM lp);
 
 // Overrides
 public:
