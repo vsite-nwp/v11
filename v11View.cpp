@@ -36,6 +36,8 @@ END_MESSAGE_MAP()
 Cv11View::Cv11View() {
 	Color = 0;
 	shape = 0;
+	lastColor = 0;
+	lastShape = 0;
 }
 
 Cv11View::~Cv11View()
@@ -146,7 +148,7 @@ void Cv11View::ColorButton() {
 	CMFCRibbonColorButton* ButtonColor = (CMFCRibbonColorButton*)arr.GetAt(0);
 
 	lastColor = ButtonColor->GetColor();
-	Color = ButtonColor->GetColor();
+	Color = lastColor;
 	Invalidate();
 }
 
@@ -157,7 +159,7 @@ void Cv11View::ShapeButton() {
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
 
 	lastShape = pGallery->GetSelectedItem();
-	shape = pGallery->GetSelectedItem();
+	shape = lastShape;
 	Invalidate();
 }
 
