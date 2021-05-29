@@ -25,11 +25,22 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_LBUTTONDOWN()
+	ON_COMMAND(ID_COLOR, &Cv11View::OnColorRibbonButtonClicked)
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShapeGalleryButtonClicked)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, RibbonHighlightPreview)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View() 
+{
+	this->shape = 0;
+	this->color = 0;
+
+	this->shape_preview = 0;
+	this->color_preview = 0;
+}
 
 Cv11View::~Cv11View()
 {
@@ -47,6 +58,22 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	HPEN pen = CreatePen(PS_SOLID, 5, this->color);
+	pDC->SelectObject(pen);
+	switch (this->shape)
+	{
+	case 0:
+		pDC->Rectangle(this->rc);
+		break;
+	case 1:
+		pDC->Ellipse(this->rc);
+		break;
+	case 2:
+		POINT roundRectCorners;
+		roundRectCorners.x = 30; roundRectCorners.y = 30; //Round rectangle corner values
+		pDC->RoundRect(this->rc, roundRectCorners);
+	}
+	DeleteObject(pen);
 }
 
 
@@ -113,3 +140,68 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 // Cv11View message handlers
 
+
+
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	CView::OnLButtonDown(nFlags, point);
+	CRectTracker trackRectangle;
+	trackRectangle.TrackRubberBand(this, point, true);
+	rc = trackRectangle.m_rect;
+	Invalidate(true);
+}
+
+
+void Cv11View::OnColorRibbonButtonClicked()
+{
+	// TODO: Add your command handler code here
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr); //Get color button by ID
+	CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)arr.GetAt(0);
+
+	this->color = pColor->GetColor();
+	this->color_preview = pColor->GetColor();
+	Invalidate(true);
+}
+
+
+void Cv11View::OnShapeGalleryButtonClicked()
+{
+	// TODO: Add your command handler code here
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr; //Store ribbon elements
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr); //Get gallery in ribbon by ID
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+
+
+	this->shape = pGallery->GetSelectedItem();
+	this->shape_preview = pGallery->GetSelectedItem();
+	Invalidate(true);
+}
+
+
+LRESULT Cv11View::RibbonHighlightPreview(WPARAM wparam, LPARAM lparam)
+{
+	int preview_index = (int)wparam;
+	CMFCRibbonBaseElement* highlighted_element = (CMFCRibbonBaseElement*)lparam;
+	CMFCRibbonColorButton* highlighted_color = (CMFCRibbonColorButton*)lparam;
+
+	switch (highlighted_element->GetID())
+	{
+	case ID_SHAPE:
+		if (preview_index != -1) this->shape = preview_index;
+		else this->shape = this->shape_preview;
+
+		break;
+		
+	case ID_COLOR:
+		if (preview_index != -1) this->color = highlighted_color->GetHighlightedColor();
+		else this->color = this->color_preview;
+	
+		break;
+	}
+
+	Invalidate();
+	return 0;
+}
