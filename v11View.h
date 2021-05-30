@@ -12,7 +12,11 @@ public:
 
 // Operations
 public:
-
+	CRect rect;
+	int s;
+	int s_p;
+	COLORREF c;
+	COLORREF c_p;
 // Overrides
 public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
@@ -31,6 +35,7 @@ public:
 #endif
 
 protected:
+	afx_msg LRESULT OnHighlightRibbonListItem(WPARAM wp, LPARAM lparam);
 
 // Generated message map functions
 protected:
@@ -39,6 +44,9 @@ protected:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	DECLARE_MESSAGE_MAP()
 public:
+	afx_msg void OnShape();
+	afx_msg void OnColor();
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint p);
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp

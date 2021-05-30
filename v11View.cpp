@@ -25,11 +25,20 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_LBUTTONDOWN()
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, Cv11View::OnHighlightRibbonListItem)
+	ON_COMMAND(ID_SHAPE, Cv11View::OnShape)
+	ON_COMMAND(ID_COLOR, Cv11View::OnColor)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View() {
+	this->s = 0;
+	this->c = 0;
+	this->s_p = 0;
+	this->c_p = 0;
+}
 
 Cv11View::~Cv11View()
 {
@@ -47,6 +56,24 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen p;
+	p.CreatePen(PS_SOLID, 2, c);
+	pDC->SelectObject(p);
+	CPoint tocka(100,100);
+
+	switch (this -> s_p)
+	{
+	case 0:
+		pDC->Rectangle(this -> rect);
+		break;
+	case 1:
+		pDC->Ellipse(this->rect);
+		break;
+	case 2:
+		pDC->RoundRect(this->rect, tocka);
+	default:
+		break;
+	}
 }
 
 
@@ -111,5 +138,74 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 #endif //_DEBUG
 
 
-// Cv11View message handlers
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint tocka)
+{
+	CRectTracker tr;
 
+	if (tr.TrackRubberBand(this, tocka))
+	{
+		rect = tr.m_rect;
+		Invalidate();
+	}
+}
+
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
+{
+	int ind = (int)wp;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElem->GetID();
+
+	switch (id)
+	{
+	case ID_COLOR:
+		if (ind != -1)
+		{
+			CMFCRibbonColorButton* cButton = (CMFCRibbonColorButton*)pElem;
+			c = cButton->GetHighlightedColor();
+			
+		}
+		else
+		{
+			c = c_p;
+		}
+		break;
+	case ID_SHAPE:
+		if (ind != -1)
+		{
+			s = ind;
+		}
+		else
+		{
+			s = s_p;
+			
+		}
+		break;
+	}
+
+	Invalidate();
+	return 0;
+}
+
+void Cv11View::OnColor()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* pGallery = (CMFCRibbonColorButton*)arr.GetAt(0);
+
+	c_p = pGallery->GetColor();
+	c = c_p;
+
+	Invalidate();
+}
+
+void Cv11View::OnShape()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+
+	s_p = pGallery->GetSelectedItem();
+	s = s_p;
+
+	Invalidate();
+}
