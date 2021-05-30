@@ -33,6 +33,7 @@ protected:  // control bar embedded members
 
 // Generated message map functions
 protected:
+	afx_msg LRESULT OnHighlightRibbonListItem(WPARAM wp, LPARAM lp);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnApplicationLook(UINT id);
 	afx_msg void OnUpdateApplicationLook(CCmdUI* pCmdUI);
