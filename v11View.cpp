@@ -190,10 +190,7 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
 		shape = index;
 		break;
 	default:
-		else
-		{
-			shape = index;
-		}
+	  	shape = index;
 		break;
 	}
 	Invalidate();

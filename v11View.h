@@ -10,9 +10,7 @@ public:
 	COLORREF prevColor;
 	int prevShape; 
 protected: // create from serialization only
-	Cv11View() {
-
-	}
+	Cv11View();
 	DECLARE_DYNCREATE(Cv11View)
 
 // Attributes
