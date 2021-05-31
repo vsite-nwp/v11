@@ -25,6 +25,10 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+    ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
+	ON_WM_LBUTTONDOWN()
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &Cv11View::OnHighlightRibbonListItem)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
@@ -184,13 +188,10 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
 		break;
 	case ID_SHAPE:
 		if (index == -1)
-		{
+		
 			shape = prevShape;
-		}
+		else
 		shape = index;
-		break;
-	default:
-	  	shape = index;
 		break;
 	}
 	Invalidate();
