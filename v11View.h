@@ -2,8 +2,16 @@
 
 class Cv11View : public CView
 {
+public:
+	CRect rc;
+	COLORREF color;
+	int shape;
 protected: // create from serialization only
-	Cv11View();
+	Cv11View() {
+		this.shape = 0;
+		this->color = RGB(0, 0, 0);
+
+	}
 	DECLARE_DYNCREATE(Cv11View)
 
 // Attributes

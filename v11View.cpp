@@ -47,6 +47,25 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen pen;
+	pen.CreatePen(PS_SOLID, 5, drawColor);
+	pDC->SelectObject(pen);
+	CPoint point(50, 50);
+
+	switch (drawShape) {
+	case 0:
+		pDC->Rectangle(cr);
+		break;
+	case 1:
+		pDC->Ellipse(cr);
+		break;
+	case 2:
+		pDC->RoundRect(cr, point);
+		break;
+	default:
+		break;
+	}
+
 }
 
 
@@ -58,6 +77,24 @@ void Cv11View::OnFilePrintPreview()
 #ifndef SHARED_HANDLERS
 	AFXPrintPreview(this);
 #endif
+}
+void Cv11View::OnColor()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* pColorButton = (CMFCRibbonColorButton*)arr.GetAt(0);
+	color = pColorButton->GetColor();
+	prevColor = color;
+	Invalidate();
+}
+void Cv11View::OnShape()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+	shape = pGallery->GetSelectedItem();
+	prevShape = shape;
+	Invalidate();
 }
 
 BOOL Cv11View::OnPreparePrinting(CPrintInfo* pInfo)
@@ -112,4 +149,48 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 
 // Cv11View message handlers
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	CRectTracker rct;
+	if (rct.TrackRubberBand(this, point))
+	{
+		rc = rct.m_rect;
+		Invalidate();
+	}
+}
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
+{
+	int index = (int)wp;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElem->GetID(); // button id (ID_SHAPE, ID_COLOR)
+	switch (id)
+	{
+	case ID_COLOR:
+		if (index == -1)
+		{
+			color = prevColor;
+		}
+		else
+		{
+			CMFCRibbonColorButton* colorBtn = (CMFCRibbonColorButton*)pElem;
+			color = colorBtn->GetHighlightedColor();
+		}
+		break;
+	case ID_SHAPE:
+		if (index == -1)
+		{
+			shape = prevShape;
+		}
+		shape = index;
+		break;
+	default:
+		else
+		{
+			shape = index;
+		}
+		break;
+	}
+	Invalidate();
+	return 0;
+}
 
