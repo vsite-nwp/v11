@@ -61,11 +61,9 @@ void Cv11View::OnDraw(CDC* cdc) {
 	CPoint cPoint(50, 50);
 
 	switch (shape_draw) {
-
 	case 0:
 		cdc->Rectangle(cRect);
 		break;
-
 	case 1:
 		cdc->Ellipse(cRect);
 		break;
