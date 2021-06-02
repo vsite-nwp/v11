@@ -19,6 +19,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CMainFrame::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CMainFrame::OnFilePrintPreview)
 	ON_UPDATE_COMMAND_UI(ID_FILE_PRINT_PREVIEW, &CMainFrame::OnUpdateFilePrintPreview)
+	ON_REGISTERED_MESSAGE (AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &CMainFrame::OnHighlightRibbonListItem )
 END_MESSAGE_MAP()
 
 // CMainFrame construction/destruction
@@ -171,6 +172,11 @@ void CMainFrame::OnApplicationLook(UINT id)
 	RedrawWindow(NULL, NULL, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ERASE);
 
 	theApp.WriteInt(_T("ApplicationLook"), theApp.m_nAppLook);
+}
+
+LRESULT CMainFrame::OnHighlightRibbonListItem(WPARAM wparam, LPARAM lparam){
+	GetActiveView()->SendMessage(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, wparam, lparam);
+	return 0;
 }
 
 void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)

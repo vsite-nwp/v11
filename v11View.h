@@ -2,6 +2,7 @@
 
 class Cv11View : public CView
 {
+
 protected: // create from serialization only
 	Cv11View();
 	DECLARE_DYNCREATE(Cv11View)
@@ -14,6 +15,14 @@ public:
 public:
 
 // Overrides
+private:
+	int shape_draw;
+	int shape_view;
+	CRect cRect;
+	COLORREF color_draw_ref;
+	COLORREF view_color_ref;
+
+
 public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
@@ -31,7 +40,7 @@ public:
 #endif
 
 protected:
-
+	afx_msg LRESULT OnHighlightRibbonListItem(WPARAM wparam, LPARAM lparam);
 // Generated message map functions
 protected:
 	afx_msg void OnFilePrintPreview();
@@ -39,7 +48,13 @@ protected:
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	DECLARE_MESSAGE_MAP()
 public:
+	afx_msg void OnLButtonDown(UINT uint, CPoint cPoint);
+
+	afx_msg void OnShape();
+	afx_msg void OnColor();
 };
+
+
 
 #ifndef _DEBUG  // debug version in v11View.cpp
 inline Cv11Doc* Cv11View::GetDocument() const

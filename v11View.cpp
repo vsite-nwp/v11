@@ -25,11 +25,20 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_LBUTTONDOWN()
+
+	ON_COMMAND(ID_COLOR, Cv11View::OnColor)
+	ON_COMMAND(ID_SHAPE, Cv11View::OnShape)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, Cv11View::OnHighlightRibbonListItem)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
-
-Cv11View::Cv11View() {}
+Cv11View::Cv11View() {
+	color_draw_ref = 0;
+	view_color_ref = 0;
+	shape_draw = 0;
+	shape_view = 0;
+}
 
 Cv11View::~Cv11View()
 {
@@ -45,8 +54,29 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 // Cv11View drawing
 
-void Cv11View::OnDraw(CDC* pDC)
-{
+void Cv11View::OnDraw(CDC* cdc) {
+	CPen cPen;
+	cPen.CreatePen(PS_SOLID, 4, color_draw_ref);
+	cdc->SelectObject(cPen);
+	CPoint cPoint(50, 50);
+
+	switch (shape_draw) {
+
+	case 0:
+		cdc->Rectangle(cRect);
+		break;
+
+	case 1:
+		cdc->Ellipse(cRect);
+		break;
+
+	case 2:
+		cdc->RoundRect(cRect, cPoint);
+		break;
+	default:
+		break;
+	}
+
 }
 
 
@@ -113,3 +143,60 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 // Cv11View message handlers
 
+void Cv11View::OnColor() {
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* pGallery = (CMFCRibbonColorButton*)arr.GetAt(0);
+	view_color_ref = pGallery->GetColor();
+	color_draw_ref = view_color_ref;
+	Invalidate();
+}
+
+void Cv11View::OnShape() {
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> cArray;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, cArray);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)cArray.GetAt(0);
+	shape_view = pGallery->GetSelectedItem();
+	shape_draw = shape_view;
+	Invalidate();
+}
+
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point) {
+	CRectTracker tracker;
+	if (tracker.TrackRubberBand(this, point)) {
+		cRect = tracker.m_rect;
+		Invalidate();
+	}
+}
+
+
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wparam, LPARAM lparam) {
+	int index = (int)wparam;
+	CMFCRibbonBaseElement* cmfcBaseElement = (CMFCRibbonBaseElement*)lparam;
+	UINT uint = cmfcBaseElement->GetID();
+	switch (uint) {
+	case ID_COLOR:
+		if (index < 0) {
+			color_draw_ref = view_color_ref;
+		}
+		else {
+			CMFCRibbonColorButton* colorButton = (CMFCRibbonColorButton*)cmfcBaseElement;
+			color_draw_ref = colorButton->GetHighlightedColor();
+		}
+		break;
+
+
+	case ID_SHAPE:
+		if (index < 0) {
+			shape_draw = shape_view;
+		}
+		else {
+			shape_draw = index;
+		}
+		break;
+	}
+
+
+	Invalidate();
+	return 0;
+}
