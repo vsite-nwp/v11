@@ -69,7 +69,6 @@ void Cv11View::OnDraw(CDC* cdc) {
 	case 1:
 		cdc->Ellipse(cRect);
 		break;
-
 	case 2:
 		cdc->RoundRect(cRect, cPoint);
 		break;
