@@ -175,8 +175,7 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wparam, LPARAM lparam) {
 	case ID_COLOR:
 		if (index < 0) {
 			color_draw_ref = view_color_ref;
-		}
-		else {
+		}else {
 			CMFCRibbonColorButton* colorButton = (CMFCRibbonColorButton*)cmfcBaseElement;
 			color_draw_ref = colorButton->GetHighlightedColor();
 		}
@@ -186,8 +185,7 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wparam, LPARAM lparam) {
 	case ID_SHAPE:
 		if (index < 0) {
 			shape_draw = shape_view;
-		}
-		else {
+		}else {
 			shape_draw = index;
 		}
 		break;
