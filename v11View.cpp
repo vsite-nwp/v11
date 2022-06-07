@@ -186,34 +186,33 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
 	UINT id = pElem->GetID();
 	switch (id)
 	{
-	case ID_COLOR:
-	{
-		if (index == -1)
+		case ID_COLOR:
 		{
-			color = prevColor;
+			if (index == -1)
+			{
+				color = prevColor;
+			}
+			else
+			{
+				CMFCRibbonColorButton* colorBtn = (CMFCRibbonColorButton*)pElem;
+				color = colorBtn->GetHighlightedColor();
+			}
+			break;
 		}
-		else
-		{
-			CMFCRibbonColorButton* colorBtn = (CMFCRibbonColorButton*)pElem;
-			color = colorBtn->GetHighlightedColor();
-		}
-		break;
-	}
 
-	case ID_SHAPE:
-	{
-		if (index == -1)
+		case ID_SHAPE:
 		{
-			shape = prevShape;
+			if (index == -1)
+			{
+				shape = prevShape;
+			}
+			else
+			{
+				shape = index;
+			}
+			break;
 		}
-		else
-		{
-			shape = index;
-		}
-		break;
 	}
-	}
-
-	Invalidate();
-	return 0;
+		Invalidate();
+		return 0;
 }
