@@ -26,6 +26,8 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONDOWN()
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
@@ -147,5 +149,24 @@ void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: Add your message handler code here and/or call default
 
 	//CView::OnLButtonDown(nFlags, point);
+	CRectTracker RTracker;
+	RTracker.TrackRubberBand(this, point);
+	rc = RTracker.m_rect;
+	Invalidate();
+}
 
+
+void Cv11View::OnShape()
+{
+	// TODO: Add your command handler code here
+
+	Invalidate();
+}
+
+
+void Cv11View::OnColor()
+{
+	// TODO: Add your command handler code here
+
+	Invalidate();
 }
