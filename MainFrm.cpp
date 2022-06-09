@@ -20,7 +20,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CMainFrame::OnFilePrintPreview)
 	ON_UPDATE_COMMAND_UI(ID_FILE_PRINT_PREVIEW, &CMainFrame::OnUpdateFilePrintPreview)
 	//dodati on_register_message
-	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &CMainFrame::OnHighlightRibbonListItem)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &CMainFrame::OnHighlightRibbonListItem) //https://docs.microsoft.com/en-us/cpp/mfc/reference/message-map-macros-mfc?view=msvc-170#on_registered_message
 END_MESSAGE_MAP()
 
 // CMainFrame construction/destruction
