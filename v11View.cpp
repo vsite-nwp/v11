@@ -56,11 +56,11 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 void Cv11View::OnDraw(CDC* pDC)
 {
 	CPen pen;
-	pen.CreatePen(PS_SOLID, 3, prevColor);
+	pen.CreatePen(PS_SOLID, 3, color);
 	pDC->SelectObject(pen);
 	
 
-	switch (prevShape)
+	switch (shape)
 	{
 	case 0:
 		pDC->Rectangle(&rc);
@@ -182,27 +182,25 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
 	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
 	UINT id = pElem->GetID();
 
-	CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)pElem;
+	
 
 	switch (id)
 	{
 	case ID_SHAPE:
 		if (index >= 0)
-			prevShape=index;
+			shape=index;
 		else
-			prevShape=shape;
-
-	
+			shape=prevShape;
 		break;
 	case ID_COLOR:
+		CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)pElem;
 		if (index >= 0)
-			prevColor = pColor->GetHighlightedColor();
+			color = pColor->GetHighlightedColor();
 		else
-			prevColor=color;
+			color = prevColor;
 		
 		break;
-	default:
-		return 0;
+	
 	}
 
 	Invalidate();
