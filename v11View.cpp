@@ -164,7 +164,7 @@ void Cv11View::OnShape()
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
 
 	shape = pGallery->GetSelectedItem();
-	prev_shape_state = pGallery->GetSelectedItem();
+	prev_shape_state = shape;
 
 	Invalidate();
 }
@@ -177,7 +177,7 @@ void Cv11View::OnColor()
 	CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)arr.GetAt(0);
 
 	color = pColor->GetColor();
-	prev_color_state = pColor->GetColor();
+	prev_color_state = color;
 
 	Invalidate();
 }
