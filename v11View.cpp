@@ -37,6 +37,8 @@ Cv11View::Cv11View() {
 	shape = 0;
 	color = 0;
 
+	prev_color_state = 0;
+	prev_shape_state = 0;
 }
 
 Cv11View::~Cv11View()
@@ -45,7 +47,6 @@ Cv11View::~Cv11View()
 
 BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
 
 	return CView::PreCreateWindow(cs);
@@ -98,12 +99,12 @@ BOOL Cv11View::OnPreparePrinting(CPrintInfo* pInfo)
 
 void Cv11View::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
-	// TODO: add extra initialization before printing
+
 }
 
 void Cv11View::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
-	// TODO: add cleanup after printing
+
 }
 
 void Cv11View::OnRButtonUp(UINT /* nFlags */, CPoint point)
@@ -147,7 +148,6 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
 
 	//CView::OnLButtonDown(nFlags, point);
 	CRectTracker RTracker;
@@ -159,7 +159,6 @@ void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 
 void Cv11View::OnShape()
 {
-	// TODO: Add your command handler code here
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
@@ -173,7 +172,6 @@ void Cv11View::OnShape()
 
 void Cv11View::OnColor()
 {
-	// TODO: Add your command handler code here
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
 	CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)arr.GetAt(0);
