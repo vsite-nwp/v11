@@ -47,7 +47,7 @@ Cv11View::~Cv11View()
 
 BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: Modify the Window class or styles here by modifying
+	// : Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
 
 	return CView::PreCreateWindow(cs);
@@ -61,11 +61,13 @@ void Cv11View::OnDraw(CDC* pDC)
 	POINT P;
 	P.y = this->rc.Height()/8;
 	P.x = this->rc.Width()/8;	
-	HPEN p = CreatePen(PS_SOLID | PS_INSIDEFRAME, 2, this->color);
+	CPen p;
+	p.CreatePen(PS_SOLID | PS_INSIDEFRAME, 2, color);
 	pDC->SelectObject(p);
 	if (shape == 0) { pDC->Rectangle(rc); }
 	if (shape == 1) { pDC->Ellipse(rc); }
 	if (shape == 2) { pDC->RoundRect(rc,P); }	
+	DeleteObject(p);
 }
 
 
@@ -87,12 +89,12 @@ BOOL Cv11View::OnPreparePrinting(CPrintInfo* pInfo)
 
 void Cv11View::OnBeginPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
-	// TODO: add extra initialization before printing
+	// : add extra initialization before printing
 }
 
 void Cv11View::OnEndPrinting(CDC* /*pDC*/, CPrintInfo* /*pInfo*/)
 {
-	// TODO: add cleanup after printing
+	// : add cleanup after printing
 }
 
 void Cv11View::OnRButtonUp(UINT /* nFlags */, CPoint point)
@@ -136,19 +138,20 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
+	// : Add your message handler code here and/or call default
 
-	CView::OnLButtonDown(nFlags, point);
+	
 	CRectTracker crt;
-	crt.TrackRubberBand(this, point);
+	if(crt.TrackRubberBand(this, point)){
 	rc = crt.m_rect;
 	Invalidate();
+	}
 }
 
 
 void Cv11View::OnColor()
 {
-	// TODO: Add your command handler code here
+	// : Add your command handler code here
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
 	CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)arr.GetAt(0);
@@ -160,7 +163,7 @@ void Cv11View::OnColor()
 
 void Cv11View::OnShape()
 {
-	// TODO: Add your command handler code here
+	// : Add your command handler code here
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
@@ -178,7 +181,7 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp) {
 		if (index == -1)
 		{
 			color = color_pre;
-			Invalidate();
+			
 		}
 		else 
 		{
@@ -191,12 +194,13 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp) {
 		if (index == -1)
 		{
 			shape = shape_pre;
-			Invalidate();
+			
 		}
 		else 
 		{
 			shape = index;		
 		}
 	}
+	Invalidate();
 	return 0;
 }
