@@ -25,11 +25,20 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_LBUTTONDOWN()
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, OnHighlightRibbonListItem)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View() {
+	shape = 0;
+	shapeCopy = shape;
+	color = RGB(0,0,0);
+	colorCopy = color;
+}
 
 Cv11View::~Cv11View()
 {
@@ -47,6 +56,22 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen pen(PS_SOLID, 1, color);
+	CPen* usePen=pDC->SelectObject(&pen);
+
+	switch (shape) {
+	case 0:
+		pDC->Rectangle(rc);
+		break;
+	case 1:
+		pDC->Ellipse(rc);
+		break;
+	case 2:
+		pDC->RoundRect(rc, CPoint(10, 20));
+		break;
+	}
+
+	pDC->SelectObject(usePen);
 }
 
 
@@ -113,3 +138,66 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 // Cv11View message handlers
 
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	CRectTracker rectTracker;
+	if(rectTracker.TrackRubberBand(this, point)) {
+		rc = rectTracker.m_rect;
+	}
+
+	CView::OnLButtonDown(nFlags, point);
+	Invalidate();
+}
+
+
+void Cv11View::OnShape()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+
+	shape = pGallery->GetSelectedItem();
+	shapeCopy = shape;
+	Invalidate();
+}
+
+
+void Cv11View::OnColor()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* pColor = (CMFCRibbonColorButton*)arr.GetAt(0);
+
+	color = pColor->GetColor();
+	colorCopy = color;
+	Invalidate();
+}
+
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
+{
+	int i = static_cast<int>(wp);
+
+	if (i == -1) {
+		shape = shapeCopy;
+		color = colorCopy;
+		Invalidate();
+		return 0;
+	}
+
+	CMFCRibbonBaseElement* pElem = reinterpret_cast<CMFCRibbonBaseElement*>(lp);
+	int id = pElem->GetID();
+
+	switch(id) {
+	case ID_SHAPE:
+		shape = i;
+		break;
+	case ID_COLOR: {
+			CMFCRibbonColorButton* highlightColor=static_cast<CMFCRibbonColorButton*>(pElem);
+			color = highlightColor->GetHighlightedColor();
+			break;
+		}
+	}
+
+	Invalidate();
+	return 0;
+}
