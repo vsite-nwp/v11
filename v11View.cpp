@@ -20,6 +20,10 @@ IMPLEMENT_DYNCREATE(Cv11View, CView)
 
 BEGIN_MESSAGE_MAP(Cv11View, CView)
 	// Standard printing commands
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnChangeDesign)
+	ON_COMMAND(ID_COLOR, &Cv11View::OnChangeColor)
+	ON_WM_LBUTTONDOWN()
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &Cv11View::OnHighlightRibbonListItem)
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
@@ -29,7 +33,12 @@ END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View() {
+	color = RGB(0, 0, 0);
+	shape = 0;
+	previewColor = RGB(0, 0, 0);
+	previewShape = 0;
+}
 
 Cv11View::~Cv11View()
 {
@@ -47,6 +56,16 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen pen;
+	pen.CreatePen(PS_SOLID, 6, color);
+	pDC->SelectObject(pen);
+	POINT pn = { 50, 50 };
+	if (shape == 0)
+		pDC->Rectangle(&rect);
+	if (shape == 1)
+		pDC->Ellipse(&rect);
+	if (shape == 2)
+		pDC->RoundRect(&rect, pn);
 }
 
 
@@ -111,5 +130,57 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 #endif //_DEBUG
 
 
+void Cv11View::OnLButtonDown(UINT f, CPoint p) {
+	CRectTracker track;
+	if (track.TrackRubberBand(this, p)) {
+		rect = track.m_rect;
+		Invalidate();
+	}
+}
+
 // Cv11View message handlers
 
+void Cv11View::OnChangeColor() {
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* ribbonColorButton = (CMFCRibbonColorButton*)arr.GetAt(0);
+	color = ribbonColorButton->GetColor();
+	previewColor = color;
+	Invalidate();
+}
+
+void Cv11View::OnChangeDesign() {
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* ribbonGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+	shape = ribbonGallery->GetSelectedItem();
+	previewShape = shape;
+	Invalidate();
+}
+
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp) {
+	int i = (int)wp;
+	CMFCRibbonBaseElement* pElement = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElement->GetID();
+	if (id == ID_COLOR) {
+		if (i == -1)
+		{
+			color = previewColor;
+		}
+		else {
+			CMFCRibbonColorButton* colorBtn = (CMFCRibbonColorButton*)pElement;
+			color = colorBtn->GetHighlightedColor();
+		}
+	}
+	if (id == ID_SHAPE) {
+		if (i == -1)
+		{
+			shape = previewShape;
+		}
+		else {
+			shape = i;
+		}
+	}
+	Invalidate();
+	return 0;
+}
