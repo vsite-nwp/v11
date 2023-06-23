@@ -31,12 +31,23 @@ public:
 #endif
 
 protected:
+	CRect m_rc;
+
+	COLORREF m_prevColor;
+	COLORREF m_currColor;
+
+	int m_prevShape;
+	int m_currShape;
 
 // Generated message map functions
 protected:
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnShape();
+	afx_msg void OnColor();
+	afx_msg LRESULT OnHighlightRibbonListItem(WPARAM wp, LPARAM lp);
 	DECLARE_MESSAGE_MAP()
 public:
 };
