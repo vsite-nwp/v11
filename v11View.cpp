@@ -123,8 +123,8 @@ void Cv11View::OnShape()
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
-	m_prevShape = m_currShape;
 	m_currShape = pGallery->GetSelectedItem();
+	m_prevShape = m_currShape;
 
 	Invalidate();
 }
@@ -134,8 +134,8 @@ void Cv11View::OnColor()
 	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
 	CMFCRibbonColorButton* pGallery = (CMFCRibbonColorButton*)arr.GetAt(0);
-	m_prevColor = m_currColor;
 	m_currColor = pGallery->GetColor();
+	m_prevColor = m_currColor;
 
 	Invalidate();
 }
@@ -153,41 +153,33 @@ LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp)
 	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
 	UINT id = pElem->GetID(); // button id (ID_SHAPE, ID_COLOR)
 
-	switch (id)
-	{
-	case ID_COLOR:
-	{
-		if (index == -1)
-		{
+	switch (id) {
+	case ID_COLOR: {
+		if (index == -1) {
 			m_currColor = m_prevColor;
-		}
-		else
-		{
+			}
+		else {
 			CMFCRibbonColorButton* colorBtn = (CMFCRibbonColorButton*)pElem;
 			m_currColor = colorBtn->GetHighlightedColor();
-		}
-			Invalidate();
+			}
 		break;
 	}
-	case ID_SHAPE:
-	{
-		if (index == -1)
-		{
+	case ID_SHAPE: {
+		if (index == -1) {
 			m_currShape = m_prevShape;
 		}
-		else
-		{
+		else{
 			m_currShape = index;
 		}
-			Invalidate();
 		break;
 	}
-	default:
-	{
+	default: {
 		// unhandeled, do nothing
 		break;
+		}
 	}
-	}
+	
+	Invalidate();
 
 	return 0;
 }
