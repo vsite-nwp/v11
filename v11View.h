@@ -10,6 +10,13 @@ protected: // create from serialization only
 public:
 	Cv11Doc* GetDocument() const;
 
+	CRect rc;          
+	COLORREF color;    
+	COLORREF prevColor; 
+	int shape;        
+	int prevShape;     
+
+
 // Operations
 public:
 
@@ -37,6 +44,10 @@ protected:
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point); 
+	afx_msg void OnShape(); 
+	afx_msg void OnColor(); 
+	afx_msg LRESULT OnHighlightRibbonListItem(WPARAM wp, LPARAM lp);
 	DECLARE_MESSAGE_MAP()
 public:
 };
