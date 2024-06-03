@@ -25,6 +25,7 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
@@ -127,3 +128,15 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 // Cv11View message handlers
 
+
+
+void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	CRectTracker rectTracker;
+	if (rectTracker.TrackRubberBand(this, point)) {  // Call this function to do rubber-band selection.
+		rc = rectTracker.m_rect;  // m_rect: Current position (in pixels) of the rectangle.
+		Invalidate();
+	}
+
+	CView::OnLButtonDown(nFlags, point);
+}
