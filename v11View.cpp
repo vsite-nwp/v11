@@ -29,7 +29,7 @@ END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
 
-Cv11View::Cv11View() {}
+Cv11View::Cv11View() : color{ 0 }, oldColor{ 0 }, shape{ 0 }, oldShape{ 0 } {}
 
 Cv11View::~Cv11View()
 {
@@ -47,6 +47,20 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen pen(PS_SOLID, 0, color);
+	pDC->SelectObject(&pen);
+
+	switch (shape) {
+	case 0:
+		pDC->Rectangle(&rc);
+		break;
+	case 1:
+		pDC->Ellipse(&rc);
+		break;
+	case 2:
+		pDC->RoundRect(&rc, CPoint(50, 50));
+		break;
+	}
 }
 
 

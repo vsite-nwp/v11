@@ -9,6 +9,11 @@ protected: // create from serialization only
 // Attributes
 public:
 	Cv11Doc* GetDocument() const;
+	CRect rc;
+	COLORREF color;
+	COLORREF oldColor;
+	int shape;
+	int oldShape;
 
 // Operations
 public:
