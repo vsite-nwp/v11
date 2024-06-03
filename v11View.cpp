@@ -26,6 +26,8 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
 	ON_WM_LBUTTONDOWN()
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
@@ -139,4 +141,28 @@ void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 
 	CView::OnLButtonDown(nFlags, point);
+}
+
+
+void Cv11View::OnShape()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+
+	shape = pGallery->GetSelectedItem();
+	oldShape = shape;  // Save for later to know which was last.
+	Invalidate();
+}
+
+
+void Cv11View::OnColor()
+{
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* ribbon_colour = (CMFCRibbonColorButton*)arr.GetAt(0);
+
+	color = ribbon_colour->GetColor();
+	oldColor = color;  // Save for later to know which was last.
+	Invalidate();
 }
