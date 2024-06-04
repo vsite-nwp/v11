@@ -166,3 +166,12 @@ void Cv11View::OnColor()
 	oldColor = color;  // Save for later to know which was last.
 	Invalidate();
 }
+
+LRESULT Cv11View::OnHightlightRibbonListItem(WPARAM wp, LPARAM lp)
+{
+	int index = (int)wp;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElem->GetID();  // button id (ID_SHAPE, ID_COLOR)
+	// ...
+	return 0;
+}

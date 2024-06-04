@@ -9,11 +9,6 @@ protected: // create from serialization only
 // Attributes
 public:
 	Cv11Doc* GetDocument() const;
-	CRect rc;
-	COLORREF color;
-	COLORREF oldColor;
-	int shape;
-	int oldShape;
 
 // Operations
 public:
@@ -36,17 +31,23 @@ public:
 #endif
 
 protected:
+	CRect rc;
+	COLORREF color;
+	COLORREF oldColor;
+	int shape;
+	int oldShape;
 
 // Generated message map functions
 protected:
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-	DECLARE_MESSAGE_MAP()
-public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnShape();
 	afx_msg void OnColor();
+	afx_msg LRESULT OnHightlightRibbonListItem(WPARAM wp, LPARAM lp);
+	DECLARE_MESSAGE_MAP()
+public:
 };
 
 #ifndef _DEBUG  // debug version in v11View.cpp
