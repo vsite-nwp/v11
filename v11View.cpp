@@ -34,8 +34,10 @@ END_MESSAGE_MAP()
 // Cv11View construction/destruction
 
 Cv11View::Cv11View() {
-	color = 0;
+	color = RGB(0,0,0);
 	shape = 0;
+	color_copy = RGB(0, 0, 0);
+	shape_copy = 0;
 }
 
 Cv11View::~Cv11View()
@@ -77,7 +79,7 @@ LRESULT Cv11View::onPreview(WPARAM wParam, LPARAM lParam) {
 
 BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 {
-	// TODO: Modify the Window class or styles here by modifying
+	//  Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
 
 	return CView::PreCreateWindow(cs);
@@ -171,7 +173,7 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
+	//  Add your message handler code here and/or call default
 	CRectTracker crt;
 
 	if (crt.TrackRubberBand(this, point, true)) {
@@ -199,5 +201,4 @@ void Cv11View::OnColor()
 	CMFCRibbonColorButton* ribbon_color = (CMFCRibbonColorButton*)arr.GetAt(0);
 
 	color = color_copy = ribbon_color->GetColor();
-	Invalidate();
 }
