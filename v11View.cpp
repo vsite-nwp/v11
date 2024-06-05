@@ -36,7 +36,9 @@ END_MESSAGE_MAP()
 Cv11View::Cv11View() 
 {
 	color = 0;
+	copy_color = color;
 	shape = 0;
+	copy_shape = shape;
 }
 
 Cv11View::~Cv11View()
@@ -196,5 +198,4 @@ void Cv11View::OnColor()
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
 	CMFCRibbonColorButton* color_ribbon = (CMFCRibbonColorButton*)arr.GetAt(0);	
 	color = copy_color = color_ribbon->GetColor();
-	Invalidate();
 }
