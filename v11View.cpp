@@ -28,6 +28,7 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_WM_LBUTTONDOWN()
 	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
 	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &Cv11View::OnHightlightRibbonListItem)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
@@ -68,7 +69,6 @@ void Cv11View::OnDraw(CDC* pDC)
 
 
 // Cv11View printing
-
 
 void Cv11View::OnFilePrintPreview()
 {
@@ -130,17 +130,13 @@ Cv11Doc* Cv11View::GetDocument() const // non-debug version is inline
 
 // Cv11View message handlers
 
-
-
 void Cv11View::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	CRectTracker rectTracker;
+	CRectTracker rectTracker;  // Allows an item to be displayed, moved, and resized in different fashions.
 	if (rectTracker.TrackRubberBand(this, point)) {  // Call this function to do rubber-band selection.
 		rc = rectTracker.m_rect;  // m_rect: Current position (in pixels) of the rectangle.
 		Invalidate();
 	}
-
-	CView::OnLButtonDown(nFlags, point);
 }
 
 
@@ -150,7 +146,7 @@ void Cv11View::OnShape()
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
 	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
 
-	shape = pGallery->GetSelectedItem();
+	shape = pGallery->GetSelectedItem();  // Set shape to the selected one.
 	oldShape = shape;  // Save for later to know which was last.
 	Invalidate();
 }
@@ -162,16 +158,38 @@ void Cv11View::OnColor()
 	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
 	CMFCRibbonColorButton* ribbon_colour = (CMFCRibbonColorButton*)arr.GetAt(0);
 
-	color = ribbon_colour->GetColor();
+	color = ribbon_colour->GetColor();  // Set color to the selected one.
 	oldColor = color;  // Save for later to know which was last.
 	Invalidate();
 }
 
-LRESULT Cv11View::OnHightlightRibbonListItem(WPARAM wp, LPARAM lp)
+LRESULT Cv11View::OnHightlightRibbonListItem(WPARAM wp, LPARAM lp)  // WPARAM: highlighted item index. LPARAM: gadget pointer.
 {
-	int index = (int)wp;
-	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	int index = (int)wp;  // Index of individual highlighted item inside gadget.
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;  // Pointer to gadget.
 	UINT id = pElem->GetID();  // button id (ID_SHAPE, ID_COLOR)
-	// ...
+
+	switch (id) {
+	case ID_SHAPE:
+		if (index == -1) {
+			shape = oldShape;
+		}
+		else {
+			shape = index;
+		}
+		break;
+	case ID_COLOR:
+		if (index == -1) {
+			color = oldColor;
+		}
+		else {
+			CMFCRibbonColorButton* ribbon_colour = (CMFCRibbonColorButton*)pElem;
+			color = ribbon_colour->GetHighlightedColor();  // Returns the color (COLORREF) of the currently selected element on the popup color palette.
+		}
+		break;
+	}
+
+	Invalidate();
+
 	return 0;
 }
