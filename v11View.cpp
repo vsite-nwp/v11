@@ -25,6 +25,10 @@ BEGIN_MESSAGE_MAP(Cv11View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &Cv11View::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_LBUTTONDOWN()
+	ON_REGISTERED_MESSAGE(AFX_WM_ON_HIGHLIGHT_RIBBON_LIST_ITEM, &Cv11View::OnHighlightRibbonListItem)
+	ON_COMMAND(ID_SHAPE, &Cv11View::OnShape)
+	ON_COMMAND(ID_COLOR, &Cv11View::OnColor)
 END_MESSAGE_MAP()
 
 // Cv11View construction/destruction
@@ -47,6 +51,18 @@ BOOL Cv11View::PreCreateWindow(CREATESTRUCT& cs)
 
 void Cv11View::OnDraw(CDC* pDC)
 {
+	CPen pen(PS_SOLID, 3, color);
+	pDC->SelectObject(&pen);
+	if (shape == 0) {
+		pDC->Rectangle(rc);
+
+	}
+	else if (shape == 1) {
+		pDC->Ellipse(rc);
+	}
+	else {
+		pDC->RoundRect(rc, CPoint(20, 20));
+	}
 }
 
 
@@ -81,6 +97,64 @@ void Cv11View::OnRButtonUp(UINT /* nFlags */, CPoint point)
 	ClientToScreen(&point);
 	OnContextMenu(this, point);
 }
+void Cv11View::OnLButtonDown(UINT /* nFlags */, CPoint point) {
+	CRectTracker rcTracker;
+	if (rcTracker.TrackRubberBand(this, point))
+		rc = rcTracker.m_rect;
+
+	Invalidate();
+}
+void Cv11View::OnShape() {
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_SHAPE, arr);
+	CMFCRibbonGallery* pGallery = (CMFCRibbonGallery*)arr.GetAt(0);
+	shape = pGallery->GetSelectedItem();
+	lastShape = shape;
+
+	Invalidate();
+}
+void Cv11View::OnColor() {
+	CArray<CMFCRibbonBaseElement*, CMFCRibbonBaseElement*> arr;
+	((CMainFrame*)AfxGetMainWnd())->m_wndRibbonBar.GetElementsByID(ID_COLOR, arr);
+	CMFCRibbonColorButton* pGallery = (CMFCRibbonColorButton*)arr.GetAt(0);
+	color = pGallery->GetColor();
+	lastColor = color;
+
+	Invalidate();
+}
+LRESULT Cv11View::OnHighlightRibbonListItem(WPARAM wp, LPARAM lp) {
+	int index = (int)wp;
+	CMFCRibbonBaseElement* pElem = (CMFCRibbonBaseElement*)lp;
+	UINT id = pElem->GetID(); 
+	switch (id) {
+	case ID_COLOR: {
+		if (index == -1) {
+			color = lastColor;
+		}
+		else {
+			CMFCRibbonColorButton* highlight = (CMFCRibbonColorButton*)pElem;
+			color = highlight->GetHighlightedColor();
+		}
+		break;
+	}
+	case ID_SHAPE: {
+		if (index == -1) {
+			shape = lastShape;
+		}
+		else {
+			shape = index;
+		}
+		break;
+	}
+	default: {
+		break;
+	}
+	}
+
+	Invalidate();
+
+	return 0;
+}
 
 void Cv11View::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 {
@@ -88,6 +162,7 @@ void Cv11View::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
 #endif
 }
+
 
 
 // Cv11View diagnostics
